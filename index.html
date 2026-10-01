@@ -439,7 +439,7 @@
               <div class="cara-davant-ast">
                 <svg id="astrolabi" viewBox="0 0 600 600"></svg>
               </div>
-              <div class="cara-darrere-ast"><span class="lema-gravat-ast">Astra manent,<br>sed…</span></div>
+              <div class="cara-darrere-ast"><span class="lema-gravat-ast" id="lemaAst">Astra manent,<br>sed…</span></div>
               <div class="planeta-orbita" id="planetaOrbita">
                 <div class="planeta-esfera" id="planetaEsfera">
                   <svg viewBox="-16.5 -16.5 33 33" overflow="visible"></svg>
@@ -458,7 +458,7 @@
             <div class="cara-davant">
               <svg id="calendari" viewBox="0 0 300 300"></svg>
             </div>
-            <div class="cara-darrere"><span class="lema-gravat">tempus<br>fugit…</span></div>
+            <div class="cara-darrere"><span class="lema-gravat" id="lemaCal">tempus<br>fugit…</span></div>
           </div>
         </div>
 
@@ -1187,6 +1187,14 @@
     const any = ara.getFullYear();
     const diaCap = diaSetmana.charAt(0).toUpperCase()+diaSetmana.slice(1);
     document.getElementById('lecturaData').textContent = `${diaCap}, ${diaMes} de ${mes} de ${any}`;
+
+    // Diada: l'1 d'octubre, el revers de les dues esferes mostra un lema
+    // especial en lloc del de sempre.
+    const esDiada = (ara.getMonth() === 9 && diaMes === 1);
+    const lemaAstEl = document.getElementById('lemaAst');
+    const lemaCalEl = document.getElementById('lemaCal');
+    if (lemaAstEl) lemaAstEl.innerHTML = esDiada ? 'Dia de la<br>República' : 'Astra manent,<br>sed\u2026';
+    if (lemaCalEl) lemaCalEl.innerHTML = esDiada ? '1er<br>d\u2019octubre' : 'tempus<br>fugit\u2026';
 
     const fase = faseLunar(ara);
     document.getElementById('lecturaLluna').textContent = nomFaseLunar(fase);
