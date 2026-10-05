@@ -3,7 +3,8 @@
   const CONFIG = Object.assign({
     selectorTitol: 'h1',            // element que també desbloqueja l'àudio en prémer-lo
     textDaurat: 'original',         // 'clar' = daurat més lluminós (tema pàtina)
-    pantallaEncesaPerDefecte: false // mantenir la pantalla encesa si l'usuari no ha triat res
+    pantallaEncesaPerDefecte: false, // mantenir la pantalla encesa si l'usuari no ha triat res
+    placa: 'daurada'                // estil de la placa de la llegenda: 'daurada' o 'fusta'
   }, window.ORLOJ_CONFIG || {});
   const COLORS_TEXT = CONFIG.textDaurat === 'clar'
     ? { anellAntic:'#ffe9ab', mesos:'#ffe487', diaSetmana:'#ffd873', diaNum:'#ffe487' }
@@ -747,6 +748,12 @@
     const fase = faseLunar(ara);
     lunaLit.setAttribute('d', pathLluna(12, fase));
     lunaGranLit.setAttribute('d', pathLluna(165, fase));
+    const ilEl = document.getElementById('lecturaIl');
+    if (ilEl){
+      const il = Math.round((1 - Math.cos(2 * Math.PI * fase)) / 2 * 100);
+      const textIl = `${il} % il\u00b7luminada`;
+      if (ilEl.textContent !== textIl) ilEl.textContent = textIl;
+    }
 
     // Tot el que només canvia d'un dia per l'altre es redibuixa en canviar
     // la data, també si la pàgina està oberta des d'ahir.
@@ -776,6 +783,16 @@
 
     nomFaseAvui = nomFaseLunarDelDia(ara);
     document.getElementById('lecturaLluna').textContent = nomFaseAvui;
+
+    // Dies de l'any: el que portem (comptant avui) i els que en queden.
+    const diesAnyEl = document.getElementById('lecturaDiesAny');
+    if (diesAnyEl){
+      const diaAny = Math.round((Date.UTC(any, ara.getMonth(), diaMes) - Date.UTC(any, 0, 0)) / 864e5);
+      const totalAny = (any % 4 === 0 && (any % 100 !== 0 || any % 400 === 0)) ? 366 : 365;
+      const queden = totalAny - diaAny;
+      diesAnyEl.textContent = `Dia ${diaAny} de l\u2019any \u00b7 ` +
+        (queden === 0 ? 'darrer dia' : queden === 1 ? 'en queda 1' : `en queden ${queden}`);
+    }
 
     // Sol al zodíac: es calcula al migdia local perquè el valor sigui el mateix tot el dia.
     const migdia = new Date(ara.getFullYear(), ara.getMonth(), ara.getDate(), 12);
@@ -1248,12 +1265,176 @@
   // ---------- Títol "Orloj" com a botó per desbloquejar l'àudio ----------
   // Els navegadors bloquegen qualsevol so fins que l'usuari interactua directament
   // amb la pàgina. En prémer el títol, desbloquegem l'àudio (sense tocs de prova).
+  // També obre la placa amb la llegenda del mestre Hanuš.
   const titolEl = document.querySelector(CONFIG.selectorTitol);
+  const placaEl = document.getElementById('orlojPlaca');
+  const placaMarcEl = document.getElementById('orlojPlacaMarc');
+  let temporitzadorPlaca = null;
+  if (placaEl) placaEl.classList.add(CONFIG.placa === 'fusta' ? 'fusta' : 'daurada');
+
+  function obrePlaca(){
+    if (!placaEl || !placaEl.hidden) return;
+    placaEl.hidden = false;
+    // La placa neix del títol: el punt d'origen de l'animació és el centre del rètol.
+    if (titolEl && placaMarcEl){
+      const rt = titolEl.getBoundingClientRect();
+      const rm = placaMarcEl.getBoundingClientRect();
+      placaMarcEl.style.transformOrigin =
+        `${(rt.left + rt.width/2 - rm.left).toFixed(0)}px ${(rt.top + rt.height/2 - rm.top).toFixed(0)}px`;
+    }
+    void placaEl.offsetWidth; // força el primer estat abans d'animar
+    placaEl.classList.add('obert');
+    placaEl.focus({preventScroll:true});
+    clearTimeout(temporitzadorPlaca);
+    temporitzadorPlaca = setTimeout(tancaPlaca, 60000); // es tanca sola al cap d'un minut
+  }
+  function tancaPlaca(){
+    if (!placaEl || placaEl.hidden) return;
+    clearTimeout(temporitzadorPlaca);
+    placaEl.classList.remove('obert');
+    setTimeout(() => { if (!placaEl.classList.contains('obert')) placaEl.hidden = true; }, 400);
+    if (titolEl) titolEl.focus({preventScroll:true});
+  }
+  if (placaEl){
+    placaEl.tabIndex = -1;
+    placaEl.addEventListener('click', tancaPlaca);
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') tancaPlaca(); });
+
   if (titolEl){
-    titolEl.addEventListener('click', () => {
+    titolEl.setAttribute('role', 'button');
+    titolEl.setAttribute('tabindex', '0');
+    titolEl.setAttribute('aria-label', 'Orloj. Toca per llegir la llegenda del rellotge');
+    const enPremerTitol = () => {
       const ctx = obtenirAudioCtx();
       if (ctx) carregaBufferEngranatge(ctx); // precarreguem el so d'engranatge d'entrada
+      obrePlaca();
+    };
+    titolEl.addEventListener('click', enPremerTitol);
+    titolEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); enPremerTitol(); }
     });
+  }
+
+  // ---------- Lectura inferior lliscant ----------
+  // Pàgines: hora i data (la de sempre) → lloc i temps → avisos (només si n'hi
+  // ha) → lluna i dies de l'any → torna a l'hora. Lliscant cap a la dreta
+  // s'avança; cap a l'esquerra es torna enrere. Tocar-la també avança.
+  const carruselEl = document.getElementById('orlojCarrusel');
+  const puntsEl = document.getElementById('orlojCarruselPunts');
+  const TORNADA_A_HORA_MS = 30000;
+  let paginaActual = 'hora';
+  let temporitzadorTornada = null;
+
+  function paginesVisibles(){
+    return carruselEl ? Array.from(carruselEl.querySelectorAll('.carrusel-pagina')).filter(p => !p.hidden) : [];
+  }
+  function pintaPunts(){
+    if (!puntsEl) return;
+    const pags = paginesVisibles();
+    while (puntsEl.children.length > pags.length) puntsEl.removeChild(puntsEl.lastChild);
+    while (puntsEl.children.length < pags.length){
+      const s = document.createElement('span'); s.className = 'carrusel-punt'; puntsEl.appendChild(s);
+    }
+    pags.forEach((p, i) => {
+      const punt = puntsEl.children[i];
+      punt.classList.toggle('actiu', p.dataset.pagina === paginaActual);
+      punt.classList.toggle('avis', p.dataset.pagina === 'avisos');
+    });
+  }
+  function mostraPagina(nom, sentit){
+    if (!carruselEl) return;
+    const pags = paginesVisibles();
+    const nova = pags.find(p => p.dataset.pagina === nom) || pags[0];
+    const vella = carruselEl.querySelector('.carrusel-pagina.actiu');
+    if (nova !== vella){
+      const desp = sentit >= 0 ? 1 : -1; // +1: avança lliscant cap a la dreta
+      nova.classList.add('sense-transicio');
+      nova.style.transform = `translateX(${-desp * 40}%)`;
+      void nova.offsetWidth;
+      nova.classList.remove('sense-transicio');
+      nova.style.transform = '';
+      nova.classList.add('actiu');
+      nova.removeAttribute('aria-hidden');
+      if (vella){
+        vella.classList.remove('actiu');
+        vella.setAttribute('aria-hidden', 'true');
+        vella.style.opacity = '';
+        vella.style.transform = `translateX(${desp * 40}%)`;
+      }
+    }
+    paginaActual = nova.dataset.pagina;
+    pintaPunts();
+    clearTimeout(temporitzadorTornada);
+    if (paginaActual !== 'hora'){
+      temporitzadorTornada = setTimeout(() => mostraPagina('hora', 1), TORNADA_A_HORA_MS);
+    }
+  }
+  function passaPagina(sentit){
+    const pags = paginesVisibles();
+    const i = pags.findIndex(p => p.dataset.pagina === paginaActual);
+    const seg = pags[(i + sentit + pags.length) % pags.length];
+    mostraPagina(seg.dataset.pagina, sentit);
+  }
+
+  if (carruselEl){
+    paginesVisibles().forEach(p => { if (!p.classList.contains('actiu')) p.setAttribute('aria-hidden', 'true'); });
+    let inici = null;      // {x, y, id}
+    let arrossega = false;
+    let fiArrossegament = 0;
+    const LLINDAR = 40;
+    carruselEl.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      inici = { x: e.clientX, y: e.clientY, id: e.pointerId };
+      arrossega = false;
+    });
+    carruselEl.addEventListener('pointermove', (e) => {
+      if (!inici || e.pointerId !== inici.id) return;
+      const dx = e.clientX - inici.x, dy = e.clientY - inici.y;
+      if (!arrossega){
+        if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.2){
+          arrossega = true;
+          carruselEl.classList.add('arrossegant');
+          try { carruselEl.setPointerCapture(e.pointerId); } catch(_){}
+        } else if (Math.abs(dy) > 10){ inici = null; return; } // és un scroll vertical
+      }
+      if (arrossega){
+        const act = carruselEl.querySelector('.carrusel-pagina.actiu');
+        if (act){
+          act.classList.add('sense-transicio');
+          act.style.transform = `translateX(${dx * 0.6}px)`;
+          act.style.opacity = String(Math.max(0.25, 1 - Math.abs(dx) / 260));
+        }
+      }
+    });
+    const acaba = (e) => {
+      if (!inici || e.pointerId !== inici.id) return;
+      const dx = e.clientX - inici.x;
+      const act = carruselEl.querySelector('.carrusel-pagina.actiu');
+      carruselEl.classList.remove('arrossegant');
+      if (arrossega){
+        fiArrossegament = performance.now();
+        if (act){ act.classList.remove('sense-transicio'); }
+        if (e.type !== 'pointercancel' && Math.abs(dx) >= LLINDAR){
+          if (act) act.style.opacity = '';
+          passaPagina(dx > 0 ? 1 : -1);
+        } else if (act){
+          act.style.transform = ''; act.style.opacity = '';
+        }
+      }
+      inici = null; arrossega = false;
+    };
+    carruselEl.addEventListener('pointerup', acaba);
+    carruselEl.addEventListener('pointercancel', acaba);
+    carruselEl.addEventListener('click', () => {
+      if (performance.now() - fiArrossegament < 400) return; // el final d'un lliscament no compta com a toc
+      passaPagina(1);
+    });
+    carruselEl.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight'){ e.preventDefault(); passaPagina(1); }
+      else if (e.key === 'ArrowLeft'){ e.preventDefault(); passaPagina(-1); }
+    });
+    pintaPunts();
   }
 
   // ---------- Controls: so, silenci nocturn i pantalla encesa ----------
@@ -1415,6 +1596,95 @@
   const VALIDESA_TEMPERATURA_MS = 3 * 60 * 60 * 1000; // no mostrar temperatures de fa més de 3 h
 
   function formataGraus(v){ return `${v.toFixed(1).replace('.', ',')}°C`; }
+
+  // Estat del cel segons el codi WMO d'Open-Meteo.
+  function descripcioCel(codi){
+    const t = {
+      0:'Cel serè', 1:'Gairebé serè', 2:'Parcialment ennuvolat', 3:'Cel cobert',
+      45:'Boira', 48:'Boira gebradora',
+      51:'Plugim feble', 53:'Plugim', 55:'Plugim intens', 56:'Plugim glaçat', 57:'Plugim glaçat intens',
+      61:'Pluja feble', 63:'Pluja', 65:'Pluja forta', 66:'Pluja glaçada', 67:'Pluja glaçada forta',
+      71:'Neu feble', 73:'Neu', 75:'Neu forta', 77:'Neu granulada',
+      80:'Ruixats febles', 81:'Ruixats', 82:'Ruixats forts', 85:'Ruixats de neu', 86:'Ruixats de neu forts',
+      95:'Tempesta', 96:'Tempesta amb calamarsa', 99:'Tempesta forta amb calamarsa'
+    };
+    return t[codi] || '';
+  }
+
+  // Avisos per fenòmens extrems a les properes 24 hores, deduïts de la
+  // previsió horària d'Open-Meteo amb llindars semblants als dels avisos
+  // oficials (no substitueixen els de Meteocat o l'AEMET).
+  const LLINDARS = { ratxa: 70, plujaHora: 15, plujaDia: 50, neu: 2, calor: 35, fred: -5 };
+  function calculaAvisos(h){
+    const avisos = [];
+    if (!h || !Array.isArray(h.time)) return avisos;
+    const n = h.time.length;
+    const val = (clau, i) => (h[clau] && typeof h[clau][i] === 'number') ? h[clau][i] : null;
+    const maxim = (clau) => { let m = null, mi = -1; for (let i = 0; i < n; i++){ const v = val(clau, i); if (v !== null && (m === null || v > m)){ m = v; mi = i; } } return [m, mi]; };
+    const minim = (clau) => { let m = null, mi = -1; for (let i = 0; i < n; i++){ const v = val(clau, i); if (v !== null && (m === null || v < m)){ m = v; mi = i; } } return [m, mi]; };
+    const suma = (clau) => { let s = 0; for (let i = 0; i < n; i++) s += val(clau, i) || 0; return s; };
+    const quan = (i) => h.time[i] * 1000;
+    const fmt = (v) => String(Math.round(v * 10) / 10).replace('.', ',');
+
+    let tempesta = -1, calamarsa = false;
+    for (let i = 0; i < n; i++){
+      const c = val('weather_code', i);
+      if (c !== null && c >= 95){ if (tempesta < 0) tempesta = i; if (c >= 96) calamarsa = true; }
+    }
+    if (tempesta >= 0) avisos.push({ text: calamarsa ? 'Tempestes amb calamarsa' : 'Tempestes', t: quan(tempesta) });
+
+    const [ratxa, iRatxa] = maxim('wind_gusts_10m');
+    if (ratxa !== null && ratxa >= LLINDARS.ratxa) avisos.push({ text: `Ratxes de vent de ${Math.round(ratxa)} km/h`, t: quan(iRatxa) });
+
+    const [plujaH, iPluja] = maxim('precipitation');
+    const plujaDia = suma('precipitation');
+    if (plujaH !== null && plujaH >= LLINDARS.plujaHora) avisos.push({ text: `Pluja intensa: ${fmt(plujaH)} mm/h`, t: quan(iPluja) });
+    else if (plujaDia >= LLINDARS.plujaDia) avisos.push({ text: `Pluja abundant: ${Math.round(plujaDia)} mm`, t: quan(iPluja) });
+
+    const neu = suma('snowfall');
+    if (neu >= LLINDARS.neu){ const [, iNeu] = maxim('snowfall'); avisos.push({ text: `Neu: ${fmt(neu)} cm`, t: quan(iNeu) }); }
+
+    const [tMax, iMax] = maxim('temperature_2m');
+    if (tMax !== null && tMax >= LLINDARS.calor) avisos.push({ text: `Calor intensa: ${Math.round(tMax)} °C`, t: quan(iMax) });
+    const [tMin, iMin] = minim('temperature_2m');
+    if (tMin !== null && tMin <= LLINDARS.fred) avisos.push({ text: `Fred intens: ${Math.round(tMin)} °C`, t: quan(iMin) });
+
+    return avisos.sort((a, b) => a.t - b.t).slice(0, 3);
+  }
+  function formataQuan(ms){
+    const d = new Date(ms), ara = new Date();
+    const dema = new Date(ara.getFullYear(), ara.getMonth(), ara.getDate() + 1);
+    const dia = (d.toDateString() === ara.toDateString()) ? 'avui'
+      : (d.toDateString() === dema.toDateString()) ? 'demà' : '';
+    const hora = d.getHours();
+    return `${dia} ${hora === 1 ? 'a la' : 'a les'} ${hora} h`.trim();
+  }
+  function pintaAvisos(d){
+    const pagina = carruselEl && carruselEl.querySelector('.carrusel-pagina[data-pagina="avisos"]');
+    const llista = document.getElementById('lecturaAvisos');
+    if (!pagina || !llista) return;
+    const recent = d && d.tAvisos && (Date.now() - d.tAvisos) < VALIDESA_TEMPERATURA_MS;
+    // Un avís deixa de mostrar-se una hora després del seu moment àlgid.
+    const vigents = recent && Array.isArray(d.avisos) ? d.avisos.filter(a => a.t > Date.now() - 3600000) : [];
+    llista.textContent = '';
+    vigents.forEach(a => {
+      const linia = document.createElement('div');
+      linia.className = 'avis-linia';
+      linia.textContent = a.text;
+      const q = document.createElement('span');
+      q.className = 'avis-quan';
+      q.textContent = formataQuan(a.t);
+      linia.appendChild(q);
+      llista.appendChild(linia);
+    });
+    const ambAvisos = vigents.length > 0;
+    if (pagina.hidden === ambAvisos){
+      pagina.hidden = !ambAvisos;
+      if (!ambAvisos && paginaActual === 'avisos') mostraPagina('hora', 1);
+      pintaPunts();
+    }
+  }
+
   function pintaAmbient(d){
     if (!d) return;
     const recent = d.t && (Date.now() - d.t) < VALIDESA_TEMPERATURA_MS;
@@ -1423,8 +1693,11 @@
     document.getElementById('lecturaTemp').textContent = (recent && typeof d.temp === 'number') ? formataGraus(d.temp) : '--°C';
     document.getElementById('lecturaHum').textContent = (recent && typeof d.hum === 'number') ? `${Math.round(d.hum)}%` : '--%';
     document.getElementById('lecturaSensacio').textContent = (recent && typeof d.sensacio === 'number') ? formataGraus(d.sensacio) : '--°C';
+    const celEl = document.getElementById('lecturaCel');
+    if (celEl) celEl.textContent = (recent && typeof d.codi === 'number' && descripcioCel(d.codi)) || '—';
     if (typeof d.alt === 'number') document.getElementById('lecturaAlt').textContent = `${Math.round(d.alt)} m`;
     if (d.lloc) document.getElementById('lecturaLloc').textContent = d.lloc;
+    pintaAvisos(d);
   }
   function llegeixAmbientDesat(){
     try { return JSON.parse(localStorage.getItem('orloj.ambient') || 'null'); } catch(e){ return null; }
@@ -1438,7 +1711,7 @@
     // Promise.allSettled: si un dels tres serveis falla o triga, els altres
     // dos segueixen actualitzant-se amb normalitat.
     const [rTemp, rElev, rLloc] = await Promise.allSettled([
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature`).then(r => r.json()),
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&hourly=temperature_2m,precipitation,snowfall,wind_gusts_10m,weather_code&forecast_hours=24&timeformat=unixtime&wind_speed_unit=kmh`).then(r => r.json()),
       fetch(`https://api.open-meteo.com/v1/elevation?latitude=${latitude}&longitude=${longitude}`).then(r => r.json()),
       nomPerDefecte ? Promise.resolve(null) :
         fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=ca`).then(r => r.json())
@@ -1449,7 +1722,12 @@
         dades.temp = c.temperature_2m;
         dades.hum = c.relative_humidity_2m;
         dades.sensacio = c.apparent_temperature;
+        dades.codi = c.weather_code;
         dades.t = Date.now();
+      }
+      if (rTemp.value.hourly){
+        dades.avisos = calculaAvisos(rTemp.value.hourly);
+        dades.tAvisos = Date.now();
       }
     } else if (rTemp.status === 'rejected'){
       console.warn("Orloj: no s'ha pogut obtenir la temperatura/humitat", rTemp.reason);

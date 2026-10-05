@@ -1,0 +1,23 @@
+<div class="lectura orloj-carrusel" id="orlojCarrusel" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Hora i data. Llisca cap a la dreta per veure més informació">
+          <div class="carrusel-pagines">
+            <div class="carrusel-pagina actiu" data-pagina="hora">
+              <div class="hora-digital" id="lecturaHora">--:--:--</div>
+              <div class="data-digital" id="lecturaData">—</div>
+            </div>
+            <div class="carrusel-pagina" data-pagina="ambient">
+              <div class="luna-linia"><span id="lecturaLloc">—</span><span class="separador-punt">·</span><span id="lecturaAlt">-- m</span></div>
+              <div class="data-digital" id="lecturaCel">—</div>
+              <div class="ambient-linia"><span id="lecturaTemp">--°C</span><span class="separador-punt">·</span><span id="lecturaHum">--%</span><span class="separador-punt">·</span><span class="etiqueta-petita">sensació</span> <span id="lecturaSensacio">--°C</span></div>
+            </div>
+            <div class="carrusel-pagina" data-pagina="avisos" hidden>
+              <div class="luna-linia avisos-titol"><span class="avis-signe" aria-hidden="true">⚠</span> Avisos · properes 24 h</div>
+              <div class="avisos-llista" id="lecturaAvisos"></div>
+            </div>
+            <div class="carrusel-pagina" data-pagina="astre">
+              <div class="luna-linia" id="lecturaLluna">—</div>
+              <div class="data-digital" id="lecturaIl">—</div>
+              <div class="ambient-linia" id="lecturaDiesAny">—</div>
+            </div>
+          </div>
+          <div class="carrusel-punts" id="orlojCarruselPunts" aria-hidden="true"></div>
+        </div>

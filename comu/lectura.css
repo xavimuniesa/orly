@@ -1,0 +1,81 @@
+  /* ===== Lectura inferior lliscant: hora i data / lloc i temps / avisos / lluna i any ===== */
+  .orloj-carrusel{
+    position: relative;
+    touch-action: pan-y;            /* el dit pot fer scroll vertical; el gest horitzontal és nostre */
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: grab;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .orloj-carrusel.arrossegant{ cursor: grabbing; }
+  .orloj-carrusel:focus-visible .carrusel-punts{ outline: 1px solid rgba(242,217,138,0.6); outline-offset: 4px; border-radius: 6px; }
+  .carrusel-pagines{
+    display: grid;                  /* totes les pàgines a la mateixa cel·la: l'alçada no salta */
+  }
+  .carrusel-pagina{
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform .5s cubic-bezier(.2,.75,.25,1), opacity .4s ease, visibility 0s linear .5s;
+  }
+  .carrusel-pagina[hidden]{ display: none; }
+  .carrusel-pagina.actiu{
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: transform .5s cubic-bezier(.2,.75,.25,1), opacity .45s ease .05s, visibility 0s;
+  }
+  .carrusel-pagina.sense-transicio{ transition: none !important; }
+  .carrusel-pagina > :first-child{ margin-top: 0; }
+  .carrusel-pagina .data-digital{ margin-top: 4px; }
+  .carrusel-pagina .ambient-linia{ margin-top: 6px; }
+  .carrusel-pagina .luna-linia .separador-punt{ color: var(--or-fosc); margin: 0 6px; }
+  .etiqueta-petita{ font-size: 0.8em; letter-spacing: 1px; opacity: 0.85; }
+
+  .avisos-titol{ color: #f0a050 !important; }
+  .avis-signe{ display: inline-block; transform: translateY(-0.05em); }
+  .avisos-llista{ display: flex; flex-direction: column; align-items: center; }
+  .avis-linia{
+    max-width: 100%;
+    text-wrap: balance;
+    line-height: 1.25;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.98em;
+    color: var(--ivori);
+    margin-top: 3px;
+    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.25), 0.8px 0.8px 1px rgba(0,0,0,0.55);
+  }
+  .avis-linia .avis-quan{ color: var(--or-viu); font-style: normal; font-family: 'Cinzel', serif; font-size: 0.78em; letter-spacing: 1px; margin-left: 6px; }
+
+  .carrusel-punts{
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 9px;
+    padding: 2px 4px;
+  }
+  .carrusel-punt{
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--or-fosc);
+    opacity: 0.7;
+    transition: background .3s ease, opacity .3s ease, transform .3s ease;
+  }
+  .carrusel-punt.actiu{ background: var(--or-clar); opacity: 1; transform: scale(1.25); }
+  .carrusel-punt.avis{ background: #e0803a; opacity: 1; animation: orlojPolsAvis 2.4s ease-in-out infinite; }
+  .carrusel-punt.avis.actiu{ animation: none; background: #f0a050; }
+  @keyframes orlojPolsAvis{
+    0%, 100% { box-shadow: 0 0 0 0 rgba(240,140,60,0.6); }
+    50%      { box-shadow: 0 0 0 5px rgba(240,140,60,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .carrusel-pagina, .carrusel-pagina.actiu{ transition: opacity .2s ease, visibility 0s; transform: none !important; }
+    .carrusel-punt.avis{ animation: none; }
+  }

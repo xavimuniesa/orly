@@ -3,7 +3,8 @@
 
   orloj.js            codi compartit (tot el comportament del rellotge)
   shells/*.html       estil i estructura propis de cada versió
-  comu/               controls (so, nit, pantalla) i etiquetes del <head>
+  comu/               controls (so, nit, pantalla), lectura lliscant, placa
+                      de la llegenda i etiquetes del <head>
   assets/             so d'engranatge i textura de pàtina
   pwa/                manifest, service worker i icones
 
@@ -23,16 +24,16 @@ DIST = ARREL / "dist"
 # Configuració pròpia de cada versió (la llegeix orloj.js).
 VARIANTS = {
     "orloj-escriptori.html": {
-        "selectorTitol": "h1", "textDaurat": "original", "pantallaEncesaPerDefecte": False,
+        "selectorTitol": "h1", "textDaurat": "original", "pantallaEncesaPerDefecte": False, "placa": "daurada",
     },
     "orloj-iphone.html": {
-        "selectorTitol": "h1", "textDaurat": "clar", "pantallaEncesaPerDefecte": True,
+        "selectorTitol": "h1", "textDaurat": "original", "pantallaEncesaPerDefecte": True, "placa": "daurada",
     },
     "orloj-medieval-escriptori.html": {
-        "selectorTitol": ".banderolaTitol", "textDaurat": "clar", "pantallaEncesaPerDefecte": False,
+        "selectorTitol": ".banderolaTitol", "textDaurat": "clar", "pantallaEncesaPerDefecte": False, "placa": "fusta",
     },
     "orloj-medieval-iphone.html": {
-        "selectorTitol": ".banderolaTitol", "textDaurat": "original", "pantallaEncesaPerDefecte": True,
+        "selectorTitol": ".banderolaTitol", "textDaurat": "clar", "pantallaEncesaPerDefecte": True, "placa": "fusta",
     },
 }
 
@@ -57,8 +58,10 @@ def construeix():
     js = llegeix("orloj.js")
     js = substitueix(js, "@ENGRANATGE_B64@", b64("assets/engranatge.mp3"))
     patina = "data:image/webp;base64," + b64("assets/patina.webp")
-    css_comu = llegeix("comu/controls.css")
-    controls = llegeix("comu/controls.html")
+    css_comu = "\n".join(llegeix(f"comu/{n}").rstrip("\n")
+                          for n in ("controls.css", "lectura.css", "placa.css"))
+    controls = llegeix("comu/controls.html").rstrip("\n") + "\n" + llegeix("comu/placa.html")
+    lectura = llegeix("comu/lectura.html")
     head = llegeix("comu/head.html")
 
     DIST.mkdir(exist_ok=True)
@@ -71,6 +74,7 @@ def construeix():
         html = substitueix(html, "<!--@ORLOJ_HEAD@-->", cap.rstrip("\n"))
         html = substitueix(html, "/*@ORLOJ_CSS_COMU@*/", css_comu.rstrip("\n"))
         html = substitueix(html, "<!--@ORLOJ_CONTROLS@-->", controls.rstrip("\n"))
+        html = substitueix(html, "<!--@ORLOJ_LECTURA@-->", lectura.rstrip("\n"))
         html = substitueix(html, "@PATINA_DATAURI@", patina, obligatori=False)
         html = substitueix(html, "/*@ORLOJ_CONFIG@*/",
                            "window.ORLOJ_CONFIG = " + json.dumps(config) + ";")
