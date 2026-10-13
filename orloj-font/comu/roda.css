@@ -1,0 +1,282 @@
+  /* =====================================================================
+     DISSENY COMÚ: títol, dues esferes gairebé iguals i la roda de fulls
+     ===================================================================== */
+  :root{
+    --S: min(84vw, 37svh);
+    --pergami: radial-gradient(ellipse at 28% 18%, rgba(255,255,244,.55), transparent 60%),
+               radial-gradient(ellipse at 82% 92%, rgba(130,90,35,.16), transparent 55%),
+               linear-gradient(160deg, #f6ecd2 0%, #ecdcb4 58%, #e2cd9c 100%);
+    --tinta: #34210f; --tinta2: #6a4b28; --accent: #7a1f12; --ratlla: rgba(100,64,22,.22);
+    --festiu: #8a2414; --festiu-txt: #fff6e2; --cs: #9a4a1a;
+  }
+  @media (orientation: landscape){
+    :root{ --S: min(40vw, calc(74svh - 70px)); }
+  }
+  .marc{ width:auto !important; max-width:none !important; }
+  .orloj-cap{ text-align:center; margin: 0 0 1.6svh; }
+  .orloj-cap h1{ margin:0 !important; font-size: clamp(38px, 6.4svh, 64px) !important; }
+  .orloj-cap .banderolaTitol{ width: clamp(170px, 26svh, 260px) !important; margin:0 auto; }
+  .contingut{ display:flex !important; flex-direction:column !important; align-items:center !important;
+    justify-content:center !important; gap: 2.2svh !important; }
+  @media (orientation: landscape){ .contingut{ flex-direction:row !important; gap: 4.5vw !important; } }
+  .columna-esq, .columna-dre{ flex:0 0 auto !important; width:auto !important; min-width:0; display:block !important; }
+  .disc-wrap{ width: var(--S) !important; margin: 0 auto !important; }
+
+  /* ---------- La roda ---------- */
+  .roda{ position:relative; width: calc(var(--S) * .96); aspect-ratio:1; margin:0 auto; touch-action:none; }
+  .roda-finestra{ position:absolute; inset:-14px -30px; overflow:hidden; }
+  .roda-pista{ position:absolute; inset:14px 30px; }
+  .full{ position:absolute; inset:0; will-change:transform; }
+  .full.ocult{ display:none; }
+  .full-esfera .calendari-wrap{ width:100% !important; margin:0 !important; }
+  .roda-punts{ position:absolute; top:50%; right:-17px; transform:translateY(-50%); display:flex; flex-direction:column; gap:7px; }
+  .roda-punts span{ display:block; width:6px; height:6px; border-radius:50%; background:#8a6d1f; opacity:.6; transition:all .3s; }
+  .roda-punts span.actiu{ background:#f2d98a; opacity:1; transform:scale(1.4); }
+  .roda-punts span.avis{ background:#e0803a; opacity:1; }
+  @media (orientation: landscape){ .roda-punts{ right:-26px; } }
+
+  /* ---------- Targetes: pergamí marfil amb marc daurat (normal) o de ferro (medieval) ---------- */
+  .targeta{ position:absolute; inset:0; filter: drop-shadow(0 8px 16px rgba(0,0,0,.55)); }
+  .t-marc{ position:absolute; inset:0; padding:4px;
+    background: linear-gradient(160deg, #f2d98a, #b8860b 35%, #6b4c05 60%, #d4af37);
+    -webkit-mask: var(--mask-ext); mask: var(--mask-ext); }
+  .orloj-medieval .t-marc{ padding:7px; background: linear-gradient(180deg, #d8d8d8, #9a9a9a 45%, #5c5c5c); }
+  .t-fons{ position:relative; height:100%; overflow:hidden; container-type:size;
+    -webkit-mask: var(--mask-int); mask: var(--mask-int);
+    background: var(--pergami); color: var(--tinta);
+    box-shadow: inset 0 0 26px rgba(110,70,20,.32);
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding: 6cqh 6.5cqw 5cqh; }
+  .t-fons.amb-ll{ padding: 0; }
+  .roda{ --mask-ext: radial-gradient(circle 22px at 0 0,#0000 97%,#000) 0 0/51% 51% no-repeat, radial-gradient(circle 22px at 100% 0,#0000 97%,#000) 100% 0/51% 51% no-repeat, radial-gradient(circle 22px at 0 100%,#0000 97%,#000) 0 100%/51% 51% no-repeat, radial-gradient(circle 22px at 100% 100%,#0000 97%,#000) 100% 100%/51% 51% no-repeat;
+         --mask-int: radial-gradient(circle 20.4px at 0 0,#0000 97%,#000) 0 0/51% 51% no-repeat, radial-gradient(circle 20.4px at 100% 0,#0000 97%,#000) 100% 0/51% 51% no-repeat, radial-gradient(circle 20.4px at 0 100%,#0000 97%,#000) 0 100%/51% 51% no-repeat, radial-gradient(circle 20.4px at 100% 100%,#0000 97%,#000) 100% 100%/51% 51% no-repeat; }
+  .orloj-medieval .roda{ --mask-int: radial-gradient(circle 19.1px at 0 0,#0000 97%,#000) 0 0/51% 51% no-repeat, radial-gradient(circle 19.1px at 100% 0,#0000 97%,#000) 100% 0/51% 51% no-repeat, radial-gradient(circle 19.1px at 0 100%,#0000 97%,#000) 0 100%/51% 51% no-repeat, radial-gradient(circle 19.1px at 100% 100%,#0000 97%,#000) 100% 100%/51% 51% no-repeat; }
+
+  /* Mides de lletra: mai per sota de 14 px (13 px les etiquetes) */
+  .t-fons{ --f-titol: clamp(17px, 6.6cqw, 30px); --f-text: clamp(16px, 6cqw, 27px); --f-etq: clamp(13.5px, 4.6cqw, 19px); --f-gran: clamp(40px, 22cqw, 120px); }
+  .t-titol{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-titol); letter-spacing:.16em; text-transform:uppercase;
+    color: var(--accent); display:flex; align-items:center; justify-content:center; gap:3cqw; margin-bottom: 3cqh; white-space:nowrap; }
+  .t-titol::before, .t-titol::after{ content:''; width:7cqw; height:1px; background:currentColor; opacity:.5; }
+  .orloj-medieval .t-titol{ font-family:'Grenze Gotisch', serif; font-weight:600; letter-spacing:.02em; text-transform:none; font-size: calc(var(--f-titol) * 1.32); }
+  .t-files{ width:100%; margin-top:auto; }
+  .t-fila{ display:flex; justify-content:space-between; align-items:baseline; gap:3cqw; padding: 1.5cqh 0; border-bottom:1px solid var(--ratlla); }
+  .t-fila:last-child{ border-bottom:0; }
+  .t-fila span{ font-family:'Cinzel', serif; font-weight:600; font-size: var(--f-etq); letter-spacing:.08em; text-transform:uppercase; color: var(--tinta2); text-align:left; }
+  .t-fila b{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-text); text-align:right; }
+  .t-peu{ margin-top:auto; font-family:'Cormorant Garamond', serif; font-style:italic; font-size: var(--f-etq); color: var(--tinta2); padding: 0 6cqw 3cqh; }
+  .m-estat{ margin:auto; font-family:'Cormorant Garamond', serif; font-style:italic; font-size: var(--f-text); color: var(--tinta2); }
+  .m-estat a{ color: var(--accent); }
+
+  /* Panells laterals dins d'una targeta */
+  .lliscador{ position:relative; width:100%; height:100%; overflow:hidden; touch-action: pan-y; }
+  .ll-pista{ display:flex; height:100%; will-change:transform; }
+  .ll-pane{ flex:0 0 100%; height:100%; display:flex; flex-direction:column; align-items:center; padding: 6cqh 6.5cqw 8cqh; min-width:0; }
+  .ll-punts{ position:absolute; left:0; right:0; bottom:2.6cqh; display:flex; justify-content:center; gap:8px; }
+  .ll-punts span{ width:7px; height:7px; border-radius:50%; background: var(--tinta2); opacity:.3; cursor:pointer; }
+  .ll-punts span.actiu{ opacity:.9; background: var(--accent); }
+  .ll-punts:has(span:only-child){ display:none; }
+
+  /* Calendari */
+  .cal-cap{ display:flex; align-items:center; justify-content:space-between; width:100%; margin-bottom:2cqh; }
+  .cal-titol{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-titol); letter-spacing:.12em; text-transform:uppercase; color: var(--accent); cursor:pointer; }
+  .cal-titol small{ font-weight:600; letter-spacing:.08em; margin-left:.4em; color: var(--tinta2); }
+  .orloj-medieval .cal-titol{ font-family:'Grenze Gotisch', serif; font-weight:600; text-transform:none; letter-spacing:.02em; font-size: calc(var(--f-titol) * 1.3); }
+  .cal-b{ width: clamp(32px, 10cqw, 46px); height: clamp(32px, 10cqw, 46px); border-radius:50%; border:1.5px solid var(--accent); background:transparent; color: var(--accent);
+    font: 700 var(--f-text) 'Cinzel', serif; line-height:1; display:grid; place-items:center; cursor:pointer; padding:0 0 3px; }
+  .cal-finestra{ position:relative; width:100%; flex:1 1 auto; overflow:hidden; touch-action: pan-y; }
+  .cal-pista{ display:flex; height:100%; transform: translate3d(-100%,0,0); }
+  .cal-mes{ flex:0 0 100%; height:100%; }
+  .cal-graella{ display:grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 1fr; height:100%; align-items:center; justify-items:center; }
+  .cap-dia{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); color: var(--tinta2); letter-spacing:.04em; }
+  .cap-dia.cs{ color: var(--cs); }
+  .dia{ position:relative; height:88%; aspect-ratio:1; max-width:100%; display:grid; place-items:center; border-radius:50%;
+    font-family:'Cormorant Garamond', serif; font-weight:700; font-size: clamp(18px, 7.4cqw, 34px); font-variant-numeric: lining-nums; color: var(--tinta); cursor:default; }
+  .dia.cs{ color: var(--cs); }
+  .dia.festiu{ background: var(--festiu); color: var(--festiu-txt); cursor:pointer; }
+  .dia.commemora{ box-shadow: inset 0 0 0 2px var(--festiu); cursor:pointer; }
+  .dia.avui{ box-shadow: 0 0 0 2.5px var(--tinta); }
+  .dia.festiu.avui{ box-shadow: 0 0 0 2.5px var(--tinta), inset 0 0 0 2px var(--festiu-txt); }
+  .dia.buit{ visibility:hidden; }
+  .cal-etiqueta{ position:absolute; left:6cqw; right:6cqw; bottom:4cqh; padding: 1.6cqh 3cqw; border-radius:10px; background: rgba(52,33,15,.92); color:#f6ecd2;
+    font-family:'Cormorant Garamond', serif; font-size: var(--f-text); line-height:1.2; opacity:0; transform: translateY(8px); transition: all .25s; pointer-events:none; }
+  .cal-etiqueta.visible{ opacity:1; transform:none; }
+  .cal-etiqueta b{ display:block; font-weight:700; }
+  .cal-etiqueta em{ display:block; font-family:'Cinzel', serif; font-style:normal; font-size: var(--f-etq); letter-spacing:.08em; opacity:.8; }
+
+  /* On som */
+  .l-nom{ font-family:'Cinzel', serif; font-weight:700; font-size: clamp(24px, 11cqw, 56px); line-height:1.05; color: var(--tinta); }
+  .orloj-medieval .l-nom{ font-family:'Grenze Gotisch', serif; font-weight:600; font-size: clamp(30px, 14cqw, 70px); }
+  .l-regio{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size: var(--f-text); color: var(--tinta2); margin-top:1cqh; }
+
+  /* El temps */
+  .tm-fila{ display:flex; align-items:center; justify-content:center; gap:3cqw; }
+  .tm-icona{ width: 26cqw; height: 26cqw; }
+  .tm-gran{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-gran); line-height:.9; font-variant-numeric: lining-nums; }
+  .tm-desc{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size: calc(var(--f-text) * 1.08); color: var(--tinta2); margin: 1cqh 0 auto; }
+  .tm-detall{ display:grid; grid-template-columns: repeat(2, 1fr); width:100%; gap:1.4cqh 6cqw; }
+  .tm-detall > div{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--ratlla); }
+  .tm-detall span{ display:inline; font-family:'Cinzel', serif; font-weight:600; font-size: var(--f-etq); letter-spacing:.04em; color: var(--tinta2); }
+  .tm-detall b{ display:inline; font-family:'Cormorant Garamond', serif; font-weight:700; font-size: calc(var(--f-text) * 1.1); }
+  .h12{ display:grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; width:100%; flex:1; gap: 1cqh 2cqw; }
+  .h12 > div{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .h12 .hh{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); color: var(--tinta2); }
+  .h12 svg{ width: 12cqw; height: 12cqw; }
+  .h12 .tt{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-text); }
+  .d5{ display:flex; flex-direction:column; width:100%; flex:1; justify-content:space-around; }
+  .d5 > div{ display:grid; grid-template-columns: 15cqw 12cqw 10cqw 1fr 10cqw; align-items:center; gap:2cqw; }
+  .d5 .dd{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); text-align:left; }
+  .d5 svg{ width: 11cqw; height: 11cqw; }
+  .d5 .mn, .d5 .mx{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-text); }
+  .d5 .mn{ color: var(--tinta2); }
+  .d5 .barra{ position:relative; height:6px; border-radius:3px; background: var(--ratlla); }
+  .d5 .barra i{ position:absolute; top:0; bottom:0; border-radius:3px; background: linear-gradient(90deg, #6f8fb8, #c98a3a); }
+
+  /* Avisos: color d'alerta */
+  .full-avisos .t-fons{ background: radial-gradient(ellipse at 50% 0%, rgba(255,240,200,.6), transparent 60%), linear-gradient(160deg, #f8dcb0, #f0bf86 60%, #e6a86a); }
+  .full-avisos .t-marc{ background: linear-gradient(160deg, #ffb070, #c2410c 50%, #ff8a3d) !important; }
+  .full-avisos .t-titol{ color:#8a1c0c; }
+  .avisos{ list-style:none; margin:0; padding:0; width:100%; display:flex; flex-direction:column; gap:2cqh; }
+  .avisos li{ display:flex; align-items:center; gap:3cqw; text-align:left; padding: 2cqh 3cqw; border-radius:10px; background: rgba(255,255,255,.45); border-left: 5px solid #c2410c;
+    font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-text); line-height:1.15; color:#3a1508; }
+  .avisos li.vermell{ border-left-color:#9b1c1c; background: rgba(255,225,215,.6); }
+  .avisos svg{ flex:0 0 auto; width: clamp(24px, 9cqw, 40px); height: clamp(24px, 9cqw, 40px); fill:none; stroke:#8a1c0c; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Avui */
+  .av-fila{ display:flex; align-items:center; justify-content:center; gap:4cqw; margin-bottom:auto; }
+  .av-num{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-gran); line-height:.85; font-variant-numeric: lining-nums; }
+  .av-text{ text-align:left; }
+  .av-set{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size: calc(var(--f-text) * 1.25); }
+  .av-mes{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-text); letter-spacing:.06em; }
+  .av-any{ font-family:'Cinzel', serif; font-size: var(--f-etq); letter-spacing:.2em; color: var(--tinta2); }
+  .ll-text{ align-items:stretch; text-align:left; justify-content:flex-start; }
+  .ef-etq{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); letter-spacing:.14em; text-transform:uppercase; color: var(--accent); margin-top: 2.4cqh; }
+  .ef-etq:first-child{ margin-top:0; }
+  .ef-sant{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size: calc(var(--f-text) * 1.08); line-height:1.15; margin-top:.6cqh; }
+  .ef-text{ font-family:'Cormorant Garamond', serif; font-weight:500; font-size: var(--f-text); line-height:1.22; margin-top:.6cqh; }
+  .sl-graella{ display:grid; grid-template-columns:1fr 1fr; gap:4cqw; width:100%; flex:1; align-items:start; }
+  .sl-col{ display:flex; flex-direction:column; align-items:center; gap:.8cqh; }
+  .sl-ic{ width: 20cqw; height: 20cqw; }
+  .sl-fila{ display:flex; gap:2cqw; align-items:baseline; font-family:'Cinzel', serif; font-weight:600; font-size: var(--f-etq); color: var(--tinta2); text-transform:uppercase; }
+  .sl-fila b{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-text); color: var(--tinta); text-transform:none; }
+  .sl-nota{ font-family:'Cormorant Garamond', serif; font-style:italic; font-size: calc(var(--f-etq) * 1.1); color: var(--tinta2); line-height:1.15; text-align:center; }
+
+  /* Distàncies */
+  .ds-llista{ width:100%; flex:1; display:flex; flex-direction:column; justify-content:flex-start; gap:1.6cqh; }
+  .ds-fila{ display:grid; grid-template-columns: 1fr auto; align-items:baseline; column-gap:3cqw; border-bottom:1px solid var(--ratlla); padding: .6cqh 0; text-align:left; }
+  .ds-fila:last-child{ border-bottom:0; }
+  .ds-nom{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); letter-spacing:.06em; text-transform:uppercase; }
+  .ds-km{ font-family:'Cormorant Garamond', serif; font-weight:700; font-size: var(--f-text); text-align:right; font-variant-numeric: lining-nums; }
+  .ds-llum{ grid-column: 1 / -1; font-family:'Cormorant Garamond', serif; font-style:italic; font-size: calc(var(--f-etq) * 1.1); color: var(--tinta2); }
+  .ds-fila.proper .ds-nom::after{ content:' ★'; color: var(--accent); }
+
+  /* Ràdio */
+  .r-graella{ display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap: 1.8cqh 2.6cqw; width:100%; flex:1; }
+  .r-boto{ display:flex; align-items:center; gap:2cqw; text-align:left; border:1.5px solid var(--ratlla); border-radius:12px; background: rgba(255,255,255,.28);
+    padding: 0 2.6cqw; cursor:pointer; color: var(--tinta); min-width:0; font:inherit; }
+  .r-boto.triat{ border-color: var(--accent); background: rgba(122,31,18,.1); }
+  .r-punt{ flex:0 0 auto; width:9px; height:9px; border-radius:50%; background: var(--ratlla); }
+  .r-boto.sonant .r-punt{ background: var(--accent); box-shadow: 0 0 6px rgba(122,31,18,.6); animation: orlojPolsBoto 1.6s infinite; }
+  .r-txt{ min-width:0; }
+  .r-nom{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); line-height:1.1; }
+  .r-sub{ display:block; font-family:'Cormorant Garamond', serif; font-style:italic; font-size: var(--f-etq); color: var(--tinta2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* Podcasts */
+  .p-seccio{ width:100%; margin-bottom: 3cqh; }
+  .p-cap{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); letter-spacing:.12em; text-transform:uppercase; color: var(--accent); text-align:left; margin-bottom:1.2cqh; }
+  .p-cap small{ font-family:'Cormorant Garamond', serif; font-style:italic; font-weight:400; letter-spacing:0; text-transform:none; color: var(--tinta2); font-size:1.1em; }
+  .p-fila{ display:flex; gap:2cqw; flex-wrap:wrap; }
+  .p-boto{ position:relative; flex:1 1 0; min-width: 16cqw; border:1.5px solid var(--ratlla); border-radius:10px; background: rgba(255,255,255,.28); padding: 1.4cqh 1cqw; cursor:pointer; color: var(--tinta); overflow:hidden; font:inherit; }
+  .p-boto.triat{ border-color: var(--accent); }
+  .p-boto.darrer{ box-shadow: inset 0 -3px 0 var(--accent); }
+  .p-dia{ display:block; font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); }
+  .p-data{ display:block; font-family:'Cormorant Garamond', serif; font-size: var(--f-etq); color: var(--tinta2); }
+  .p-ic{ display:block; height: 1.1em; color: var(--accent); }
+  .p-ic svg{ width: 1em; height: 1em; }
+  .p-boto .ic-pausa, .p-boto.sonant .ic-play{ display:none; } .p-boto.sonant .ic-pausa{ display:inline; }
+  .p-barra{ position:absolute; left:0; bottom:0; height:3px; width:0; background: var(--accent); }
+
+  /* Notícies */
+  .n-pane{ align-items:stretch; }
+  .n-llista{ position:relative; flex:1; display:flex; flex-direction:column; overflow:hidden; text-align:left; }
+  .n-item{ display:flex; gap:2.4cqw; padding: 1.4cqh 0; border-bottom:1px solid var(--ratlla); color: var(--tinta); text-decoration:none; }
+  .n-item.ultim{ border-bottom:0; }
+  .n-num{ flex:0 0 auto; min-width:1.3em; font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); color: var(--accent); line-height:1.5; }
+  .n-txt{ font-family:'Cormorant Garamond', serif; font-weight:600; font-size: var(--f-text); line-height:1.15; }
+  #nPeu{ position:absolute; left:0; right:0; bottom:0; text-align:center; padding-bottom: 1cqh; font-size: clamp(11px, 3.3cqw, 15px); }
+  .full[data-full="noticies"] .ll-punts{ bottom: 5.5cqh; }
+
+  /* ---------- Botons ---------- */
+  .orloj-controls{ position:fixed; top: max(12px, env(safe-area-inset-top)); display:flex; gap:10px; z-index:50; }
+  .orloj-controls.esq{ left: max(12px, env(safe-area-inset-left)); }
+  .orloj-controls.dre{ right: max(12px, env(safe-area-inset-right)); }
+  .orloj-boto{ width:44px; height:44px; border-radius:50%; border:1.5px solid rgba(212,175,55,.7); background: rgba(14,10,6,.6); color:#f2d98a;
+    display:grid; place-items:center; padding:0; cursor:pointer; -webkit-tap-highlight-color:transparent; transition: box-shadow .2s, opacity .2s; }
+  .orloj-boto svg{ width:22px; height:22px; display:block; }
+  .orloj-boto:focus-visible{ outline:2px solid #f2d98a; outline-offset:2px; }
+  .boto-idioma{ font: 700 13px 'Cinzel', serif; letter-spacing:1px; }
+  #orlojBotoSo .barra{ display:none; }
+  #orlojBotoSo.mut{ opacity:.6; } #orlojBotoSo.mut .barra{ display:inline; }
+  #orlojBotoSo.bloquejat{ animation: orlojPolsBoto 2s ease-in-out infinite; }
+  #orlojBotoVeu.parlant .ona1, #orlojBotoVeu.parlant .ona2{ animation: orlojOna 1s ease-in-out infinite; }
+  @keyframes orlojOna{ 50%{ opacity:.25; } }
+  #orlojBotoMode .ic-nit, #orlojBotoMode .ic-zz{ display:none; }
+  .mode-nit #orlojBotoMode .ic-dia{ display:none; } .mode-nit #orlojBotoMode .ic-nit{ display:block; }
+  .mode-zz #orlojBotoMode .ic-dia{ display:none; } .mode-zz #orlojBotoMode .ic-zz{ display:block; font: 700 15px 'Cinzel', serif; }
+  @keyframes orlojPolsBoto{ 0%,100%{ box-shadow:0 0 0 0 rgba(240,198,92,.55); } 50%{ box-shadow:0 0 0 7px rgba(240,198,92,0); } }
+  .orloj-menu-idioma{ position:absolute; top:52px; left:0; margin:0; padding:6px; list-style:none; min-width:190px; border-radius:12px;
+    background: var(--pergami); border:1.5px solid #b8860b; box-shadow: 0 10px 28px rgba(0,0,0,.5); }
+  .orloj-menu-idioma li{ display:flex; gap:12px; align-items:center; padding:9px 12px; border-radius:8px; cursor:pointer;
+    font: 600 18px 'Cormorant Garamond', serif; color: var(--tinta); }
+  .orloj-menu-idioma li b{ font: 700 12px 'Cinzel', serif; letter-spacing:1px; color: var(--accent); width:24px; }
+  .orloj-menu-idioma li.actiu{ background: rgba(122,31,18,.12); }
+  .ara-sona{ position:fixed; left:50%; bottom: max(14px, env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:50; display:flex; align-items:center; gap:10px;
+    padding: 8px 10px 8px 14px; border-radius:24px; background: var(--pergami); border:1.5px solid #b8860b; color: var(--tinta); box-shadow:0 8px 22px rgba(0,0,0,.5); cursor:pointer; max-width: 90vw; }
+  .ara-sona[hidden]{ display:none; }
+  .ara-sona > svg{ width:22px; height:22px; flex:0 0 auto; color: var(--accent); }
+  .as-txt{ display:flex; flex-direction:column; min-width:0; text-align:left; }
+  .as-etq{ font: 700 11px 'Cinzel', serif; letter-spacing:1.4px; text-transform:uppercase; color: var(--tinta2); }
+  .as-val{ font: 700 17px 'Cormorant Garamond', serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .as-tanca{ width:30px; height:30px; border-radius:50%; border:0; background: rgba(122,31,18,.12); color: var(--accent); display:grid; place-items:center; padding:0; cursor:pointer; }
+  .as-tanca svg{ width:16px; height:16px; }
+  .orloj-avis{ position:fixed; left:50%; top: calc(max(12px, env(safe-area-inset-top)) + 56px); transform: translate(-50%, -6px); z-index:55; opacity:0; pointer-events:none;
+    padding: 8px 16px; border-radius:18px; background: rgba(20,14,8,.9); color:#f2d98a; font: 600 14px 'Cinzel', serif; letter-spacing:1px; transition: all .3s; text-align:center; max-width: 90vw; }
+  .orloj-avis.visible{ opacity:1; transform: translate(-50%, 0); }
+  .orloj-vel{ display:none; }
+
+  /* =====================================================================
+     MODE NOCTURN: el rellotge de sempre, enfosquit, i targetes fosques
+     ===================================================================== */
+  .mode-nit .orloj-vel{ display:block; position:fixed; inset:0; z-index:40; pointer-events:none; background: rgba(0,0,0,.5); }
+  .mode-nit, .mode-nit body{ background:#050403 !important; }
+  .mode-nit .t-fons, .mode-zz .t-fons{ --tinta:#e9dcc0; --tinta2:#b9a47e; --accent:#e0a85a; --ratlla: rgba(224,168,90,.22); --festiu:#a8402a; --festiu-txt:#fff1dc; --cs:#d08a5a;
+    background: radial-gradient(ellipse at 50% 0%, rgba(212,175,55,.08), transparent 65%), linear-gradient(180deg, #17110b, #0b0805) !important; box-shadow:none; }
+  .mode-nit .orloj-menu-idioma, .mode-nit .ara-sona{ background:#17110b; --tinta:#e9dcc0; --tinta2:#b9a47e; --accent:#e0a85a; }
+
+  /* =====================================================================
+     MODE Zz: verd fosforescent i taronja vermellós, tènues; la pantalla no s'apaga
+     ===================================================================== */
+  .mode-zz{ --lume: rgba(125,255,143,.62); --lume-tenue: rgba(125,255,143,.3); --brasa: rgba(255,90,31,.78); }
+  .mode-zz, .mode-zz body{ background:#000 !important; }
+  .mode-zz .marc{ background:#000 !important; box-shadow:none !important; border-color:transparent !important; }
+  .mode-zz .disc-wrap svg *, .mode-zz .calendari-wrap svg *{ fill:none !important; stroke: var(--lume-tenue) !important; filter:none !important; }
+  .mode-zz .disc-wrap svg defs *, .mode-zz .calendari-wrap svg defs *{ stroke:none !important; }
+  .mode-zz .disc-wrap svg text, .mode-zz .calendari-wrap svg text{ fill: var(--lume) !important; stroke:none !important; }
+  .mode-zz #lunaGranLit, .mode-zz #lunaLit{ fill: rgba(125,255,143,.26) !important; stroke: var(--lume) !important; }
+  .mode-zz #busquaHora *, .mode-zz #busquaMinut *, .mode-zz #busquaHora, .mode-zz #busquaMinut{ fill: rgba(125,255,143,.45) !important; }
+  .mode-zz #diaNum, .mode-zz #diaSetmanaAbrev{ fill: var(--brasa) !important; }
+  .mode-zz .cara-davant, .mode-zz .cara-davant-ast{ filter:none !important; }
+  .mode-zz .cos-cilindre, .mode-zz .cos-cilindre-ast, .mode-zz .cara-darrere, .mode-zz .cara-darrere-ast, .mode-zz .planeta-orbita{ display:none !important; }
+  .mode-zz .orloj-cap h1{ color: var(--brasa) !important; text-shadow:none !important; }
+  .mode-zz .banderolaTitol path, .mode-zz .banderolaTitol circle{ fill:#000 !important; stroke: var(--brasa) !important; filter:none !important; }
+  .mode-zz .banderolaTitol text{ fill: var(--brasa) !important; text-shadow:none !important; }
+  .mode-zz .orloj-boto{ background:transparent !important; border-color: var(--brasa) !important; color: var(--brasa) !important; }
+  .mode-zz .roda-punts span{ background: rgba(255,90,31,.3) !important; } .mode-zz .roda-punts span.actiu{ background: var(--brasa) !important; }
+  .mode-zz .t-marc{ background: rgba(255,90,31,.45) !important; padding:2px !important; }
+  .mode-zz .t-fons{ --tinta: rgba(255,120,60,.85); --tinta2: rgba(255,120,60,.6); --accent: rgba(125,255,143,.7); --ratlla: rgba(255,90,31,.22); --festiu: rgba(255,90,31,.55); --festiu-txt:#000; --cs: rgba(255,120,60,.7);
+    background:#000 !important; }
+  .mode-zz .targeta{ filter:none; }
+  .mode-zz .tm-icona, .mode-zz .h12 svg, .mode-zz .d5 svg, .mode-zz .sl-ic{ filter: grayscale(1) sepia(1) saturate(6) hue-rotate(-30deg) brightness(.75); }
+  .mode-zz .orloj-menu-idioma, .mode-zz .ara-sona{ background:#000; border-color: var(--brasa); --tinta: rgba(255,120,60,.9); --tinta2: rgba(255,120,60,.6); --accent: rgba(125,255,143,.8); }
+
+  @media (prefers-reduced-motion: reduce){ .full, .ll-pista, .cal-pista{ transition:none !important; } }
+  @media print{ .orloj-controls, .ara-sona{ display:none; } }

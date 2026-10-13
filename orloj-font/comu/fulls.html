@@ -1,0 +1,124 @@
+<section class="full" data-full="calendari"><div class="targeta"><div class="t-marc"><div class="t-fons">
+            <div class="cal-cap">
+              <button type="button" class="cal-b" id="calAnt" data-i18n-aria="mesAnt">‹</button>
+              <div class="cal-titol" id="calTitol" data-i18n-title="dobleToc">—</div>
+              <button type="button" class="cal-b" id="calSeg" data-i18n-aria="mesSeg">›</button>
+            </div>
+            <div class="cal-finestra" id="calFinestra"><div class="cal-pista" id="calPista"></div></div>
+            <div class="cal-etiqueta" id="calEtiqueta" role="status"></div>
+          </div></div></div></section>
+
+          <section class="full" data-full="lloc"><div class="targeta"><div class="t-marc"><div class="t-fons">
+            <div class="t-titol" data-i18n="onSom">On som</div>
+            <div class="l-nom" id="fLloc">—</div>
+            <div class="l-regio" id="fRegio">—</div>
+            <div class="t-files">
+              <div class="t-fila"><span data-i18n="altitud">Altitud</span><b id="fAlt">-- m</b></div>
+              <div class="t-fila"><span data-i18n="coordenades">Coordenades</span><b id="fCoord">—</b></div>
+              <div class="t-fila"><span data-i18n="migdiaSolar">Migdia solar</span><b id="fMigdia">--:--</b></div>
+            </div>
+          </div></div></div></section>
+
+          <section class="full" data-full="temps"><div class="targeta"><div class="t-marc"><div class="t-fons amb-ll">
+            <div class="lliscador" id="llTemps"><div class="ll-pista">
+              <div class="ll-pane">
+                <div class="t-titol" data-i18n="elTemps">El temps</div>
+                <div class="tm-fila"><svg class="tm-icona" id="fIcona" viewBox="0 0 64 64" aria-hidden="true"></svg><div class="tm-gran" id="fTemp">--°</div></div>
+                <div class="tm-desc" id="fDesc" data-i18n="esperantDades">Esperant dades…</div>
+                <div class="tm-detall">
+                  <div><span data-i18n="max">Màx</span><b id="fMax">--°</b></div>
+                  <div><span data-i18n="min">Mín</span><b id="fMin">--°</b></div>
+                  <div><span data-i18n="sensacio">Sensació</span><b id="fSens">--°</b></div>
+                  <div><span data-i18n="humitat">Humitat</span><b id="fHum">--%</b></div>
+                </div>
+              </div>
+              <div class="ll-pane">
+                <div class="t-titol" data-i18n="t12">Properes hores</div>
+                <div class="h12" id="fH12"></div>
+              </div>
+              <div class="ll-pane">
+                <div class="t-titol" data-i18n="t5">Propers 5 dies</div>
+                <div class="d5" id="fD5"></div>
+              </div>
+            </div><div class="ll-punts"></div></div>
+          </div></div></div></section>
+
+          <section class="full full-avisos ocult" data-full="avisos" id="fullAvisos"><div class="targeta"><div class="t-marc"><div class="t-fons">
+            <div class="t-titol"><span class="av-signe" aria-hidden="true">⚠</span> <span data-i18n="avisos">Avisos</span></div>
+            <ul class="avisos" id="fAvisos"></ul>
+            <div class="t-peu" data-i18n="avisosPeu">Segons la previsió</div>
+          </div></div></div></section>
+
+          <section class="full" data-full="avui"><div class="targeta"><div class="t-marc"><div class="t-fons amb-ll">
+            <div class="lliscador" id="llAvui"><div class="ll-pista">
+              <div class="ll-pane">
+                <div class="t-titol" data-i18n="titolAvui">Avui</div>
+                <div class="av-fila">
+                  <div class="av-num" id="fDiaNum">–</div>
+                  <div class="av-text"><div class="av-set" id="fDiaSet">—</div><div class="av-mes" id="fMes">—</div><div class="av-any" id="fAny">—</div></div>
+                </div>
+                <div class="t-files">
+                  <div class="t-fila"><span data-i18n="diaAnyEtq">Dia de l'any</span><b id="fDiaAny">—</b></div>
+                  <div class="t-fila"><span data-i18n="llunaT">Lluna</span><b id="fFase">—</b></div>
+                  <div class="t-fila"><span data-i18n="zodiac">Zodíac</span><b id="fZodiac">—</b></div>
+                </div>
+              </div>
+              <div class="ll-pane ll-text">
+                <div class="ef-etq" id="fSantEtq" data-i18n="sant">Sant del dia</div>
+                <div class="ef-sant" id="fSant">—</div>
+                <div class="ef-etq" id="fCurioEtq">—</div>
+                <div class="ef-text" id="fCurio">—</div>
+              </div>
+              <div class="ll-pane">
+                <div class="t-titol" data-i18n="tsl">Sol i lluna</div>
+                <div class="sl-graella">
+                  <div class="sl-col">
+                    <svg class="sl-ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="9" fill="url(#gSolSL)" stroke="#8a5536" stroke-width="1.4"/><g stroke="#b97752" stroke-width="2.4" stroke-linecap="round"><path d="M24 4v6M24 38v6M4 24h6M38 24h6M9.9 9.9l4.2 4.2M33.9 33.9l4.2 4.2M9.9 38.1l4.2-4.2M33.9 14.1l4.2-4.2"/></g><defs><radialGradient id="gSolSL" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#fff0de"/><stop offset="50%" stop-color="#e3a983"/><stop offset="100%" stop-color="#9a5e3c"/></radialGradient></defs></svg>
+                    <div class="sl-fila"><span data-i18n="surt">Surt</span><b id="slSolS">--:--</b></div>
+                    <div class="sl-fila"><span data-i18n="pon">Es pon</span><b id="slSolP">--:--</b></div>
+                    <div class="sl-nota" id="slLlum">—</div>
+                    <div class="sl-nota" id="slDif">—</div>
+                  </div>
+                  <div class="sl-col">
+                    <svg class="sl-ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="15" fill="#5c4c32" opacity=".35"/><path id="slFase" d="" fill="#f8f0de" stroke="#8a5536" stroke-width="1"/><circle cx="24" cy="24" r="15" fill="none" stroke="#8a5536" stroke-width="1.2"/></svg>
+                    <div class="sl-fila"><span data-i18n="surt">Surt</span><b id="slLlS">--:--</b></div>
+                    <div class="sl-fila"><span data-i18n="pon">Es pon</span><b id="slLlP">--:--</b></div>
+                    <div class="sl-nota" id="slIl">—</div>
+                    <div class="sl-nota" id="slProp">—</div>
+                  </div>
+                </div>
+              </div>
+            </div><div class="ll-punts"></div></div>
+          </div></div></div></section>
+
+          <section class="full" data-full="distancies"><div class="targeta"><div class="t-marc"><div class="t-fons amb-ll">
+            <div class="lliscador" id="llDist"><div class="ll-pista">
+              <div class="ll-pane"><div class="t-titol" data-i18n="distancies">Distàncies</div><div class="ds-llista" id="dist1"></div></div>
+              <div class="ll-pane"><div class="t-titol" data-i18n="distancies">Distàncies</div><div class="ds-llista" id="dist2"></div></div>
+              <div class="ll-pane"><div class="t-titol" data-i18n="distancies">Distàncies</div><div class="ds-llista" id="dist3"></div></div>
+            </div><div class="ll-punts"></div></div>
+          </div></div></div></section>
+
+          <section class="full" data-full="radio"><div class="targeta"><div class="t-marc"><div class="t-fons">
+            <div class="t-titol" data-i18n="radio">Ràdio</div>
+            <div class="r-graella" id="mRadios"></div>
+          </div></div></div></section>
+
+          <section class="full ocult" data-full="podcasts" id="fullPodcasts"><div class="targeta"><div class="t-marc"><div class="t-fons">
+            <div class="t-titol" data-i18n="podcasts">Podcasts</div>
+            <div class="p-seccio">
+              <div class="p-cap">La Competència <small>· RAC1</small></div>
+              <div class="p-fila" id="pCompetencia"></div>
+            </div>
+            <div class="p-seccio">
+              <div class="p-cap">Via lliure <small>· RAC1</small></div>
+              <div class="p-fila" id="pVia"></div>
+            </div>
+          </div></div></div></section>
+
+          <section class="full" data-full="noticies"><div class="targeta"><div class="t-marc"><div class="t-fons amb-ll">
+            <div class="lliscador" id="llNot"><div class="ll-pista" id="nPista">
+              <div class="ll-pane n-pane"><div class="t-titol" data-i18n="noticies">Notícies</div><div class="n-llista" id="mNoticies"></div></div>
+            </div><div class="ll-punts"></div></div>
+            <div class="t-peu" id="nPeu"></div>
+          </div></div></div></section>
