@@ -2,12 +2,8 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Orloj">
-<meta name="theme-color" content="#100c08">
-<title>Orloj — iPhone</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orloj — Rellotge astronòmic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Grenze+Gotisch:wght@500;600;700&family=Alegreya:ital,wght@0,500;0,700;1,500&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
@@ -30,7 +26,7 @@
 
   html,body{
     margin:0;
-    height:100%;
+    min-height:100%;
     background:
       radial-gradient(ellipse at 50% -10%, #3a2c18 0%, transparent 55%),
       radial-gradient(ellipse at 50% 120%, #000 0%, transparent 60%),
@@ -40,58 +36,63 @@
   }
 
   body{
+    height: 100dvh;
     display:flex;
     justify-content:center;
     align-items:center;
-    min-height: 100dvh;
-    overflow-y: auto;
     padding:
-      max(10px, env(safe-area-inset-top))
-      max(10px, env(safe-area-inset-right))
-      max(10px, env(safe-area-inset-bottom))
-      max(10px, env(safe-area-inset-left));
+      max(16px, env(safe-area-inset-top))
+      max(20px, env(safe-area-inset-right))
+      max(16px, env(safe-area-inset-bottom))
+      max(20px, env(safe-area-inset-left));
   }
 
   .marc{
-    width: min(100%, 92vh);
-    max-width: 460px;
+    width:100%;
+    max-width: 1260px;
     border-radius: 22px;
     background:
       radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.06), transparent 60%),
       linear-gradient(180deg, #1b140d 0%, #100c08 100%);
-    padding: 1.4vh 4vw 1.2vh;
+    padding: clamp(18px, 2.6vw, 34px) clamp(24px, 3.4vw, 46px);
     position: relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
   }
 
   .contingut{
     display:flex;
-    flex-direction:column;
     align-items:center;
-    width:100%;
+    gap: clamp(20px, 3.5vw, 48px);
   }
-  .columna-esq, .columna-dre{
+  .columna-esq{
+    flex: 1 1 58%;
+    min-width: 0;
+    text-align:center;
+  }
+  .columna-dre{
+    flex: 1 1 38%;
+    min-width: 0;
     display:flex;
     flex-direction:column;
     align-items:center;
-    width:100%;
+  }
+
+  @media (max-width: 780px){
+    .contingut{ flex-direction:column; }
+    .columna-esq, .columna-dre{ flex: 1 1 auto; width:100%; }
   }
 
   header{
     text-align:center;
-    flex: 0 0 auto;
+    margin-bottom: 4px;
   }
   h1{
     font-family: 'UnifrakturMaguntia', cursive;
     font-weight: 400;
-    font-size: clamp(22px, 7vh, 38px);
-    margin: 2px 0 0;
+    font-size: clamp(32px, 4.4vw, 52px);
+    margin: 4px 0 2px;
     color: var(--or-clar);
-    text-shadow: 0 0 18px rgba(212,175,55,0.35), -1px -1px 0px rgba(255,250,230,0.45), 1px 1px 1.5px rgba(0,0,0,0.7);
+    text-shadow: 0 0 18px rgba(212,175,55,0.35), -1.5px -1.5px 0px rgba(255,250,230,0.45), 1.5px 1.5px 2px rgba(0,0,0,0.7);
     letter-spacing: 1px;
-    line-height:1;
     cursor: pointer;
   }
   h1:active{
@@ -99,18 +100,26 @@
   }
   .subtitol{
     font-family: 'Cinzel', serif;
-    font-size: clamp(8px, 1.6vh, 11px);
-    letter-spacing: 2.5px;
+    font-size: clamp(10px, 1.3vw, 13px);
+    letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--or-viu);
     font-weight: 600;
-    text-shadow: 0 0 6px rgba(240,198,92,0.35), -0.8px -0.8px 0 rgba(255,250,230,0.4), 0.8px 0.8px 1px rgba(0,0,0,0.65);
+    text-shadow: 0 0 6px rgba(240,198,92,0.35), -1px -1px 0 rgba(255,250,230,0.4), 1px 1px 1.5px rgba(0,0,0,0.65);
+  }
+  .subtitol-secundari{
+    font-family: 'Cinzel', serif;
+    font-size: clamp(7px, 0.85vw, 9px);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--or-fosc);
+    font-weight: 600;
+    text-shadow: -1px -1px 0 rgba(255,250,230,0.35), 1px 1px 1.5px rgba(0,0,0,0.6);
   }
 
   .disc-wrap{
-    width: min(62vw, 40vh, 420px);
-    flex: 0 0 auto;
-    margin: 1vh auto 0;
+    width: min(100%, 660px, 58vh);
+    margin: 14px auto 0;
     position: relative;
     aspect-ratio: 1 / 1;
   }
@@ -238,12 +247,11 @@
   }
 
   .calendari-wrap{
-    width: min(33vw, 21vh, 190px);
-    margin: 1vh auto 0;
+    width: min(85%, 400px, 34vh);
+    margin: 4px auto 0;
     position: relative;
     z-index: 2;
-    flex: 0 0 auto;
-    perspective: 1400px;
+    perspective: 1600px;
   }
   .calendari-wrap svg{ width:100%; height:auto; display:block; }
 
@@ -304,25 +312,25 @@
   .lema-gravat{
     font-family:'UnifrakturMaguntia', cursive;
     font-weight:400;
-    font-size: clamp(13px, 8.5vw, 23px);
-    letter-spacing: 0.4px;
+    font-size: clamp(24px, 5vw, 44px);
+    letter-spacing: 0.5px;
     text-align:center;
     color: #9c7a1f;
     text-shadow:
-      -0.8px -0.8px 1px rgba(60,40,5,0.65),
-      0.8px 1.2px 1.2px rgba(255,244,200,0.7);
+      -1px -1px 1px rgba(60,40,5,0.65),
+      1px 1.5px 1.5px rgba(255,244,200,0.7);
   }
 
   .lectura{
     text-align:center;
-    flex: 0 0 auto;
+    margin-top: 22px;
     font-family:'Cinzel', serif;
   }
   .hora-digital{
-    font-size: clamp(18px, 4.6vh, 28px);
+    font-size: clamp(32px, 3.8vw, 46px);
     letter-spacing: 0;
     color: var(--or-clar);
-    text-shadow: 0 0 12px rgba(212,175,55,0.3), -1px -1px 0 rgba(255,250,230,0.4), 1px 1px 1.5px rgba(0,0,0,0.7);
+    text-shadow: 0 0 12px rgba(212,175,55,0.3), -1.5px -1.5px 0 rgba(255,250,230,0.4), 1.5px 1.5px 2px rgba(0,0,0,0.7);
   }
   .hora-digital .xifra{
     display: inline-block;
@@ -337,29 +345,29 @@
   .data-digital{
     font-family:'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(11px, 2.4vh, 15px);
+    font-size: clamp(17px, 1.9vw, 22px);
     color: var(--arg);
-    margin-top: 1px;
-    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.3), 0.8px 0.8px 1px rgba(0,0,0,0.5);
+    margin-top: 3px;
+    text-shadow: -1px -1px 0 rgba(255,250,230,0.3), 1px 1px 1.5px rgba(0,0,0,0.5);
   }
   .luna-linia{
-    margin-top: 3px;
-    font-size: clamp(9px, 1.8vh, 12px);
-    letter-spacing: 1.2px;
+    margin-top: 9px;
+    font-size: clamp(13px, 1.5vw, 16px);
+    letter-spacing: 1.5px;
     color: var(--or-viu);
     font-weight: 600;
     text-transform: uppercase;
-    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.35), 0.8px 0.8px 1px rgba(0,0,0,0.6);
+    text-shadow: -1px -1px 0 rgba(255,250,230,0.35), 1px 1px 1.5px rgba(0,0,0,0.6);
   }
 
   .ambient-linia{
     margin-top: 5px;
-    font-size: clamp(10px, 2.4vw, 12px);
+    font-size: clamp(11px, 1.3vw, 14px);
     letter-spacing: 1.2px;
     color: var(--or-viu);
     text-transform: uppercase;
     opacity: 0.9;
-    text-shadow: -0.7px -0.7px 0 rgba(255,250,230,0.3), 0.7px 0.7px 1px rgba(0,0,0,0.55);
+    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.3), 0.8px 0.8px 1.2px rgba(0,0,0,0.55);
   }
   .ambient-linia .separador-punt{
     color: var(--or-fosc);
@@ -367,15 +375,21 @@
   }
 
   .separador{
-    width: 55%;
-    max-width: 200px;
+    width: 70%;
+    max-width: 260px;
     height: 1px;
-    margin: 6px auto;
+    margin: 20px auto;
     background: linear-gradient(90deg, transparent, var(--or-fosc), transparent);
   }
 
   .lema{
-    display:none;
+    text-align:center;
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(14px, 1.5vw, 17px);
+    color: #8b7a5e;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
   }
 
   text{ font-family:'Cinzel', serif; user-select:none; }
@@ -383,41 +397,6 @@
 
   @media (prefers-reduced-motion: reduce){
     * { transition: none !important; }
-  }
-
-  /* Mòbil en horitzontal: disposició en dues columnes, com la versió de tauleta */
-  @media (orientation: landscape) and (max-height: 600px){
-    body{ align-items:center; }
-    .marc{
-      width: min(96vw, 780px);
-      max-width: none;
-      padding: 1.6vh 3vw;
-    }
-    .contingut{
-      flex-direction: row;
-      align-items: center;
-      gap: 3vw;
-    }
-    .columna-esq{ flex: 1 1 56%; width:auto; }
-    .columna-dre{ flex: 1 1 40%; width:auto; }
-
-    header{ margin-bottom: 0; }
-    h1{ font-size: clamp(16px, 5.5vh, 26px); margin: 0; }
-    .subtitol{ font-size: clamp(7px, 1.4vh, 10px); }
-
-    .disc-wrap{
-      width: min(44vw, 68vh, 380px);
-      margin: 0.4vh auto 0;
-    }
-    .calendari-wrap{
-      width: min(24vw, 38vh, 175px);
-      margin: 0.5vh auto 0;
-    }
-    .separador{ margin: 3px auto; }
-    .hora-digital{ font-size: clamp(14px, 5vh, 26px); }
-    .data-digital{ font-size: clamp(9px, 2.2vh, 14px); }
-    .luna-linia{ font-size: clamp(7px, 1.7vh, 11px); }
-    .ambient-linia{ font-size: clamp(7px, 1.7vh, 11px); }
   }
   /* =====================================================================
      DISSENY COMÚ: títol, dues esferes gairebé iguals i la roda de fulls
@@ -730,6 +709,8 @@
 <link rel="apple-touch-icon" href="orloj-icona-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="orloj-icona-192.png">
 <meta name="theme-color" content="#16110c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Orloj">
 </head>
 <body class="orloj-normal">
 
@@ -889,6 +870,7 @@
             <div class="t-peu" id="nPeu"></div>
           </div></div></div></section>
         </div></div><div class="roda-punts" id="rodaPunts" aria-hidden="true"></div></div>
+
 
 
       </div>
@@ -3107,7 +3089,9 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     }
     arrel.addEventListener('pointerup', acabaL);
     arrel.addEventListener('pointercancel', () => { ini = null; posaL(0, true); });
-    arrel.addEventListener('lostpointercapture', () => { if (ini && ini.h){ ini = null; posaL(0, true); } });
+    // En tàctil el dit ja és capturat per l'element tocat; quan el panell el pren, el
+    // lostpointercapture d'aquell fill puja fins aquí i no s'ha de confondre amb una pèrdua real.
+    arrel.addEventListener('lostpointercapture', e => { if (e.target !== arrel) return; if (ini && ini.h){ ini = null; posaL(0, true); } });
     arrel.addEventListener('wheel', e => {
       if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 15) return;
       e.preventDefault(); e.stopPropagation();
@@ -3276,7 +3260,7 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
       ini = null; arr = false;
     });
     finestra.addEventListener('pointercancel', () => { if (arr) posaC(0, true); ini = null; arr = false; });
-    finestra.addEventListener('lostpointercapture', () => { if (arr){ posaC(0, true); ini = null; arr = false; } });
+    finestra.addEventListener('lostpointercapture', e => { if (e.target !== finestra) return; if (arr){ posaC(0, true); ini = null; arr = false; } });
     const estatC = { ultim: 0 };
     finestra.addEventListener('wheel', e => {
       if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || Math.abs(e.deltaX) < 15) return;
