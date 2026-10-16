@@ -2,8 +2,12 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orloj — Rellotge astronòmic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Orloj">
+<meta name="theme-color" content="#100c08">
+<title>Orloj — iPhone</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Grenze+Gotisch:wght@500;600;700&family=Alegreya:ital,wght@0,500;0,700;1,500&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
@@ -26,7 +30,7 @@
 
   html,body{
     margin:0;
-    min-height:100%;
+    height:100%;
     background:
       radial-gradient(ellipse at 50% -10%, #3a2c18 0%, transparent 55%),
       radial-gradient(ellipse at 50% 120%, #000 0%, transparent 60%),
@@ -36,63 +40,58 @@
   }
 
   body{
-    height: 100dvh;
     display:flex;
     justify-content:center;
     align-items:center;
+    min-height: 100dvh;
+    overflow-y: auto;
     padding:
-      max(16px, env(safe-area-inset-top))
-      max(20px, env(safe-area-inset-right))
-      max(16px, env(safe-area-inset-bottom))
-      max(20px, env(safe-area-inset-left));
+      max(10px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right))
+      max(10px, env(safe-area-inset-bottom))
+      max(10px, env(safe-area-inset-left));
   }
 
   .marc{
-    width:100%;
-    max-width: 1260px;
+    width: min(100%, 92vh);
+    max-width: 460px;
     border-radius: 22px;
     background:
       radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.06), transparent 60%),
       linear-gradient(180deg, #1b140d 0%, #100c08 100%);
-    padding: clamp(18px, 2.6vw, 34px) clamp(24px, 3.4vw, 46px);
+    padding: 1.4vh 4vw 1.2vh;
     position: relative;
-  }
-
-  .contingut{
-    display:flex;
-    align-items:center;
-    gap: clamp(20px, 3.5vw, 48px);
-  }
-  .columna-esq{
-    flex: 1 1 58%;
-    min-width: 0;
-    text-align:center;
-  }
-  .columna-dre{
-    flex: 1 1 38%;
-    min-width: 0;
     display:flex;
     flex-direction:column;
     align-items:center;
   }
 
-  @media (max-width: 780px){
-    .contingut{ flex-direction:column; }
-    .columna-esq, .columna-dre{ flex: 1 1 auto; width:100%; }
+  .contingut{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+  }
+  .columna-esq, .columna-dre{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
   }
 
   header{
     text-align:center;
-    margin-bottom: 4px;
+    flex: 0 0 auto;
   }
   h1{
     font-family: 'UnifrakturMaguntia', cursive;
     font-weight: 400;
-    font-size: clamp(32px, 4.4vw, 52px);
-    margin: 4px 0 2px;
+    font-size: clamp(22px, 7vh, 38px);
+    margin: 2px 0 0;
     color: var(--or-clar);
-    text-shadow: 0 0 18px rgba(212,175,55,0.35), -1.5px -1.5px 0px rgba(255,250,230,0.45), 1.5px 1.5px 2px rgba(0,0,0,0.7);
+    text-shadow: 0 0 18px rgba(212,175,55,0.35), -1px -1px 0px rgba(255,250,230,0.45), 1px 1px 1.5px rgba(0,0,0,0.7);
     letter-spacing: 1px;
+    line-height:1;
     cursor: pointer;
   }
   h1:active{
@@ -100,26 +99,18 @@
   }
   .subtitol{
     font-family: 'Cinzel', serif;
-    font-size: clamp(10px, 1.3vw, 13px);
-    letter-spacing: 3px;
+    font-size: clamp(8px, 1.6vh, 11px);
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--or-viu);
     font-weight: 600;
-    text-shadow: 0 0 6px rgba(240,198,92,0.35), -1px -1px 0 rgba(255,250,230,0.4), 1px 1px 1.5px rgba(0,0,0,0.65);
-  }
-  .subtitol-secundari{
-    font-family: 'Cinzel', serif;
-    font-size: clamp(7px, 0.85vw, 9px);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--or-fosc);
-    font-weight: 600;
-    text-shadow: -1px -1px 0 rgba(255,250,230,0.35), 1px 1px 1.5px rgba(0,0,0,0.6);
+    text-shadow: 0 0 6px rgba(240,198,92,0.35), -0.8px -0.8px 0 rgba(255,250,230,0.4), 0.8px 0.8px 1px rgba(0,0,0,0.65);
   }
 
   .disc-wrap{
-    width: min(100%, 660px, 58vh);
-    margin: 14px auto 0;
+    width: min(62vw, 40vh, 420px);
+    flex: 0 0 auto;
+    margin: 1vh auto 0;
     position: relative;
     aspect-ratio: 1 / 1;
   }
@@ -247,11 +238,12 @@
   }
 
   .calendari-wrap{
-    width: min(85%, 400px, 34vh);
-    margin: 4px auto 0;
+    width: min(33vw, 21vh, 190px);
+    margin: 1vh auto 0;
     position: relative;
     z-index: 2;
-    perspective: 1600px;
+    flex: 0 0 auto;
+    perspective: 1400px;
   }
   .calendari-wrap svg{ width:100%; height:auto; display:block; }
 
@@ -312,25 +304,25 @@
   .lema-gravat{
     font-family:'UnifrakturMaguntia', cursive;
     font-weight:400;
-    font-size: clamp(24px, 5vw, 44px);
-    letter-spacing: 0.5px;
+    font-size: clamp(13px, 8.5vw, 23px);
+    letter-spacing: 0.4px;
     text-align:center;
     color: #9c7a1f;
     text-shadow:
-      -1px -1px 1px rgba(60,40,5,0.65),
-      1px 1.5px 1.5px rgba(255,244,200,0.7);
+      -0.8px -0.8px 1px rgba(60,40,5,0.65),
+      0.8px 1.2px 1.2px rgba(255,244,200,0.7);
   }
 
   .lectura{
     text-align:center;
-    margin-top: 22px;
+    flex: 0 0 auto;
     font-family:'Cinzel', serif;
   }
   .hora-digital{
-    font-size: clamp(32px, 3.8vw, 46px);
+    font-size: clamp(18px, 4.6vh, 28px);
     letter-spacing: 0;
     color: var(--or-clar);
-    text-shadow: 0 0 12px rgba(212,175,55,0.3), -1.5px -1.5px 0 rgba(255,250,230,0.4), 1.5px 1.5px 2px rgba(0,0,0,0.7);
+    text-shadow: 0 0 12px rgba(212,175,55,0.3), -1px -1px 0 rgba(255,250,230,0.4), 1px 1px 1.5px rgba(0,0,0,0.7);
   }
   .hora-digital .xifra{
     display: inline-block;
@@ -345,29 +337,29 @@
   .data-digital{
     font-family:'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(17px, 1.9vw, 22px);
+    font-size: clamp(11px, 2.4vh, 15px);
     color: var(--arg);
-    margin-top: 3px;
-    text-shadow: -1px -1px 0 rgba(255,250,230,0.3), 1px 1px 1.5px rgba(0,0,0,0.5);
+    margin-top: 1px;
+    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.3), 0.8px 0.8px 1px rgba(0,0,0,0.5);
   }
   .luna-linia{
-    margin-top: 9px;
-    font-size: clamp(13px, 1.5vw, 16px);
-    letter-spacing: 1.5px;
+    margin-top: 3px;
+    font-size: clamp(9px, 1.8vh, 12px);
+    letter-spacing: 1.2px;
     color: var(--or-viu);
     font-weight: 600;
     text-transform: uppercase;
-    text-shadow: -1px -1px 0 rgba(255,250,230,0.35), 1px 1px 1.5px rgba(0,0,0,0.6);
+    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.35), 0.8px 0.8px 1px rgba(0,0,0,0.6);
   }
 
   .ambient-linia{
     margin-top: 5px;
-    font-size: clamp(11px, 1.3vw, 14px);
+    font-size: clamp(10px, 2.4vw, 12px);
     letter-spacing: 1.2px;
     color: var(--or-viu);
     text-transform: uppercase;
     opacity: 0.9;
-    text-shadow: -0.8px -0.8px 0 rgba(255,250,230,0.3), 0.8px 0.8px 1.2px rgba(0,0,0,0.55);
+    text-shadow: -0.7px -0.7px 0 rgba(255,250,230,0.3), 0.7px 0.7px 1px rgba(0,0,0,0.55);
   }
   .ambient-linia .separador-punt{
     color: var(--or-fosc);
@@ -375,21 +367,15 @@
   }
 
   .separador{
-    width: 70%;
-    max-width: 260px;
+    width: 55%;
+    max-width: 200px;
     height: 1px;
-    margin: 20px auto;
+    margin: 6px auto;
     background: linear-gradient(90deg, transparent, var(--or-fosc), transparent);
   }
 
   .lema{
-    text-align:center;
-    font-family:'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: clamp(14px, 1.5vw, 17px);
-    color: #8b7a5e;
-    letter-spacing: 0.5px;
-    margin-top: 4px;
+    display:none;
   }
 
   text{ font-family:'Cinzel', serif; user-select:none; }
@@ -397,6 +383,41 @@
 
   @media (prefers-reduced-motion: reduce){
     * { transition: none !important; }
+  }
+
+  /* Mòbil en horitzontal: disposició en dues columnes, com la versió de tauleta */
+  @media (orientation: landscape) and (max-height: 600px){
+    body{ align-items:center; }
+    .marc{
+      width: min(96vw, 780px);
+      max-width: none;
+      padding: 1.6vh 3vw;
+    }
+    .contingut{
+      flex-direction: row;
+      align-items: center;
+      gap: 3vw;
+    }
+    .columna-esq{ flex: 1 1 56%; width:auto; }
+    .columna-dre{ flex: 1 1 40%; width:auto; }
+
+    header{ margin-bottom: 0; }
+    h1{ font-size: clamp(16px, 5.5vh, 26px); margin: 0; }
+    .subtitol{ font-size: clamp(7px, 1.4vh, 10px); }
+
+    .disc-wrap{
+      width: min(44vw, 68vh, 380px);
+      margin: 0.4vh auto 0;
+    }
+    .calendari-wrap{
+      width: min(24vw, 38vh, 175px);
+      margin: 0.5vh auto 0;
+    }
+    .separador{ margin: 3px auto; }
+    .hora-digital{ font-size: clamp(14px, 5vh, 26px); }
+    .data-digital{ font-size: clamp(9px, 2.2vh, 14px); }
+    .luna-linia{ font-size: clamp(7px, 1.7vh, 11px); }
+    .ambient-linia{ font-size: clamp(7px, 1.7vh, 11px); }
   }
   /* =====================================================================
      DISSENY COMÚ: títol, dues esferes gairebé iguals i la roda de fulls
@@ -704,13 +725,15 @@
   .sl-col .sl-nota{ text-align:center; }
   .sl-nom{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); letter-spacing:.1em; text-transform:uppercase; color: var(--tinta2); text-align:center; }
   .t-titol-2{ margin-top: calc(14px * var(--k)); }
+
+  /* Mentre una esfera gira, la meitat que s'acosta sobresurt uns píxels de la
+     pàgina; sense això el navegador hi posa una barra de desplaçament efímera. */
+  html:has(.girant), html:has(.girant) body{ overflow:hidden; }
 </style>
 <link rel="manifest" href="orloj.webmanifest">
 <link rel="apple-touch-icon" href="orloj-icona-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="orloj-icona-192.png">
 <meta name="theme-color" content="#16110c">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Orloj">
 </head>
 <body class="orloj-normal">
 
@@ -872,7 +895,6 @@
         </div></div><div class="roda-punts" id="rodaPunts" aria-hidden="true"></div></div>
 
 
-
       </div>
     </div>
   </div>
@@ -952,55 +974,49 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     return 'M' + punts.join('L') + 'Z';
   }
 
-  // ==================== El cos del cilindre amb volum ====================
-  (function generaVolumCilindre(){
-    const contenidor = document.getElementById('cosCilindre');
+  // ==================== El gruix de les esferes ====================
+  // Abans eren 24 discs daurats apilats per esfera (48 capes de la mida de
+  // l'esfera). A escriptori, amb esferes grans i pantalla Retina, això
+  // esgotava la memòria gràfica del navegador i en girar deixava el fons en
+  // blanc i les cares buides. Ara: un sol disc al mig (per l'interior) i una
+  // vora feta de tires estretes al voltant, que ocupen molt poca memòria.
+  function generaGruix(contenidor, classeDisc, gruix){
     if (!contenidor) return;
-
-    const totalCapes = 24;
-    const gruixTotal = 28;
-
-    for (let i = 0; i < totalCapes; i++) {
-      const capa = document.createElement('div');
-      capa.className = 'capa-volum';
-
-      const zPos = -gruixTotal/2 + (i * (gruixTotal / (totalCapes - 1)));
-
-      capa.style.position = 'absolute';
-      capa.style.inset = '0';
-      capa.style.borderRadius = '50%';
-      capa.style.transform = `translateZ(${zPos.toFixed(2)}px)`;
-
-      contenidor.appendChild(capa);
+    const N = 72, medieval = document.body.classList.contains('orloj-medieval');
+    const disc = document.createElement('div');
+    disc.className = classeDisc;
+    Object.assign(disc.style, { position:'absolute', inset:'0', borderRadius:'50%', transform:'translateZ(0px)' });
+    contenidor.appendChild(disc);
+    const tires = [];
+    for (let k = 0; k < N; k++){
+      const a = k * 360 / N, t = document.createElement('div');
+      // llum des de dalt a l'esquerra, com el reflex de les cares
+      const llum = Math.max(0, Math.cos((a - (-35)) * Math.PI / 180));
+      const f = 0.35 + 0.65 * llum;
+      const c = (x0, x1) => Math.round(x0 + (x1 - x0) * f);
+      const col = `rgb(${c(90,246)},${c(62,206)},${c(6,110)})`, fosc = `rgb(${c(50,150)},${c(34,110)},${c(3,20)})`;
+      const ombra = `linear-gradient(to bottom, ${fosc}, ${col} 45%, ${col} 55%, ${fosc})`;
+      Object.assign(t.style, { position:'absolute', left:'50%', top:'50%', height: gruix + 'px',
+        backfaceVisibility:'visible', pointerEvents:'none',
+        background: medieval ? `linear-gradient(to bottom, rgba(0,0,0,${(0.55 - 0.4*f).toFixed(2)}), rgba(0,0,0,${(0.35 - 0.3*f).toFixed(2)})), var(--textura-patina) ${(k*7)%100}% 50% / 900% 900%` : ombra });
+      contenidor.appendChild(t); tires.push([t, a]);
     }
-  })();
-
-  // ==================== El cos del cilindre de l'esfera interior (astrolabi) ====================
-  (function generaVolumCilindreAstrolabi(){
-    const contenidor = document.getElementById('cosCilindreAst');
-    if (!contenidor) return;
-
-    const totalCapes = 24;
-    // Una mica menys que la profunditat de les cares (14px), per evitar que
-    // la capa més externa de la pila coincideixi exactament amb la cara
-    // frontal (conflicte de renderització "z-fighting" que feia que el
-    // daurat es filtrés per les zones transparents fins i tot en repòs).
-    const gruixTotal = 25.2;
-
-    for (let i = 0; i < totalCapes; i++) {
-      const capa = document.createElement('div');
-      capa.className = 'capa-volum-ast';
-
-      const zPos = -gruixTotal/2 + (i * (gruixTotal / (totalCapes - 1)));
-
-      capa.style.position = 'absolute';
-      capa.style.inset = '0';
-      capa.style.borderRadius = '50%';
-      capa.style.transform = `translateZ(${zPos.toFixed(2)}px)`;
-
-      contenidor.appendChild(capa);
+    function situa(){
+      const R = contenidor.clientWidth / 2;
+      if (!R) return;
+      const w = (2 * R * Math.sin(Math.PI / N) + 1.5).toFixed(2);
+      tires.forEach(([t, a]) => {
+        t.style.width = w + 'px';
+        t.style.marginLeft = (-w / 2) + 'px'; t.style.marginTop = (-gruix / 2) + 'px';
+        t.style.transform = `rotateZ(${a}deg) translateY(${(-R + 0.5).toFixed(2)}px) rotateX(90deg)`;
+      });
     }
-  })();
+    situa();
+    if (window.ResizeObserver) new ResizeObserver(situa).observe(contenidor);
+    else window.addEventListener('resize', situa);
+  }
+  generaGruix(document.getElementById('cosCilindre'), 'capa-volum', 28);
+  generaGruix(document.getElementById('cosCilindreAst'), 'capa-volum-ast', 25.2);
 
   // Fletxa/punxa de relleu (inspirada en una punta de tanca de ferro forjat), amb la punta a l'origen (0,0)
   const fletxaFerroPath = "M 0,0 L -4.5,-13 C -4.5,-16 -3,-17 -2,-18 C -6,-17 -11,-18 -13,-22 C -14,-24 -13,-25.5 -11,-25 C -8,-24.3 -5,-23 -3,-24.5 C -2.5,-27 -1,-29 0,-31 C 1,-29 2.5,-27 3,-24.5 C 5,-23 8,-24.3 11,-25 C 13,-25.5 14,-24 13,-22 C 11,-18 6,-17 2,-18 C 3,-17 4.5,-16 4.5,-13 L 0,0 Z";
@@ -2040,8 +2056,10 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   const calendariFlipEl = document.getElementById('calendariFlip');
   let girEnCurs = false;
   if (calendariFlipEl){
-    calendariFlipEl.addEventListener('animationend', () => {
+    calendariFlipEl.addEventListener('animationend', e => {
+      if (e.target !== calendariFlipEl) return;
       girEnCurs = false;
+      calendariFlipEl.classList.remove('girant');
     });
   }
 
@@ -2084,7 +2102,8 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   const astrolabiFlipEl = document.getElementById('astrolabiFlip');
   let girEnCursAst = false;
   if (astrolabiFlipEl){
-    astrolabiFlipEl.addEventListener('animationend', () => {
+    astrolabiFlipEl.addEventListener('animationend', e => {
+      if (e.target !== astrolabiFlipEl) return;
       girEnCursAst = false;
       astrolabiFlipEl.classList.remove('girant');
     });

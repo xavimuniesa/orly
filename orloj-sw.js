@@ -3,7 +3,7 @@
 //   versió) i, si no n'hi ha, la còpia desada.
 // - Tipografies de Google: primer la còpia desada (no canvien mai).
 // - Dades meteorològiques i de població: sempre de la xarxa, mai desades.
-const VERSIO = 'orloj-v2';
+const VERSIO = 'orloj-v5';
 
 // En instal·lar-se, desa els recursos fixos. Les pàgines es desen quan la
 // mateixa pàgina ho demana (vegeu el missatge 'desa' més avall), així no cal
