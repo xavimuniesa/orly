@@ -487,7 +487,7 @@
     padding: 10px 14px 12px; --k:1; }
   .t-fons.amb-ll{ padding:0; }
   .t-fons{ padding: calc(10px * var(--k)) calc(14px * var(--k)) calc(12px * var(--k)); }
-  .ll-pane{ padding: calc(10px * var(--k)) calc(14px * var(--k)) calc(20px * var(--k)) !important; }
+  .ll-pane{ padding: calc(10px * var(--k)) calc(14px * var(--k)) max(24px, calc(20px * var(--k))) !important; }
   .t-fons, .ll-pane{ --f-titol: calc(16px * var(--k)); --f-text: calc(16px * var(--k)); --f-etq: calc(12.5px * var(--k)); --f-gran: calc(56px * var(--k)); }
 
   .t-titol{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-titol); letter-spacing:.14em; text-transform:uppercase; line-height:1.15;
@@ -614,7 +614,7 @@
   .r-punt{ flex:0 0 auto; width:9px; height:9px; border-radius:50%; background: var(--ratlla); }
   .r-boto.sonant .r-punt{ background: var(--accent); box-shadow: 0 0 6px rgba(122,31,18,.6); animation: orlojPolsBoto 1.6s infinite; }
   .r-txt{ min-width:0; }
-  .r-nom{ display:block; font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); line-height:1.15; overflow-wrap:anywhere; }
+  .r-nom{ display:block; font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-etq); line-height:1.15; }
   .r-sub{ display:block; font-family:'Cormorant Garamond', serif; font-style:italic; font-size: calc(var(--f-etq) * 1.08); color: var(--tinta2); line-height:1.15; }
 
   /* Podcasts */
@@ -729,6 +729,10 @@
   /* Mentre una esfera gira, la meitat que s'acosta sobresurt uns píxels de la
      pàgina; sense això el navegador hi posa una barra de desplaçament efímera. */
   html:has(.girant), html:has(.girant) body{ overflow:hidden; }
+
+  /* Les paraules no es tallen mai per la meitat: si no hi caben, la lletra
+     s'encongeix (vegeu ajustaCaixa a roda.js). */
+  .t-fons, .t-fons *{ overflow-wrap:normal; word-break:normal; hyphens:manual; -webkit-hyphens:manual; }
 </style>
 <link rel="manifest" href="orloj.webmanifest">
 <link rel="apple-touch-icon" href="orloj-icona-180.png">
@@ -3131,12 +3135,53 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   // Cada panell comença a la mida plena (--k = 1) i només s'encongeix si el
   // contingut no hi cap, fins a un 72 % com a màxim.
   function kBase(el){ return Math.round(Math.min(1.6, Math.max(1, el.clientHeight / 290)) * 100) / 100; }
+  // Hi ha res que no càpiga? (a) més alt que la finestra; (b) alguna caixa amb
+  // contingut més ample que ella; (c) algun element que surt de l'espai útil
+  // (dins dels marges, i sense trepitjar els puntets de pàgina).
+  const EXCLOS = '.cal-finestra, .cal-finestra *, .cal-etiqueta, svg *';
+  function desborda(el){
+    if (el.scrollHeight > el.clientHeight + 1) return true;
+    const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+    const top = r.top + parseFloat(cs.paddingTop) - 1, bot = r.bottom - parseFloat(cs.paddingBottom) + 1,
+          esq = r.left + parseFloat(cs.paddingLeft) - 2, dre = r.right - parseFloat(cs.paddingRight) + 2;
+    for (const d of el.querySelectorAll('*')){
+      if (d.matches(EXCLOS)) continue;
+      if (!(d instanceof SVGElement) && d.clientWidth && d.scrollWidth > d.clientWidth + 1) return true;
+      const q = d.getBoundingClientRect();
+      if (!q.width || !q.height) continue;
+      if (q.top < top || q.bottom > bot || q.left < esq || q.right > dre) return true;
+    }
+    return false;
+  }
   function ajustaCaixa(el){
     if (!el.clientHeight) return;
     // en finestres grans (escriptori) la lletra creix amb la finestra, fins a 1,6 vegades
-    let k = kBase(el); el.style.setProperty('--k', k);
-    while (el.scrollHeight > el.clientHeight + 1 && k > 0.72){ k = +(k - 0.04).toFixed(2); el.style.setProperty('--k', k); }
+    let k = kBase(el);
+    const prova = () => {
+      el.querySelectorAll('[data-encongit]').forEach(t => { t.style.fontSize = ''; delete t.dataset.encongit; });
+      el.style.setProperty('--k', k);
+      // una paraula que no cap a la seva caixa (un nom de ràdio llarg, una paraula
+      // alemanya...) s'encongeix ella sola, sense fer petita tota la finestra
+      textosAmples(el).forEach(t => {
+        const base = parseFloat(getComputedStyle(t).fontSize); let f = 1;
+        while (t.scrollWidth > t.clientWidth + 1 && f > 0.6){ f -= 0.05; t.style.fontSize = (base * f).toFixed(2) + 'px'; }
+        t.dataset.encongit = '1';
+      });
+      return desborda(el);
+    };
+    while (prova() && k > 0.6) k = +(k - 0.03).toFixed(2);
   }
+  // Elements amb text propi que desborden d'amplada (una paraula més llarga que la seva caixa)
+  function textosAmples(el){
+    const r = [];
+    el.querySelectorAll('*').forEach(t => {
+      if (t instanceof SVGElement || !t.clientWidth || t.matches(EXCLOS)) return;
+      if (![...t.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) return;
+      if (t.scrollWidth > t.clientWidth + 1) r.push(t);
+    });
+    return r;
+  }
+  window.__orlojDesborda = desborda;
   function ajustaFull(full){
     if (!full) return;
     const panes = full.querySelectorAll('.ll-pane');
