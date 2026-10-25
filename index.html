@@ -733,6 +733,56 @@
   /* Les paraules no es tallen mai per la meitat: si no hi caben, la lletra
      s'encongeix (vegeu ajustaCaixa a roda.js). */
   .t-fons, .t-fons *{ overflow-wrap:normal; word-break:normal; hyphens:manual; -webkit-hyphens:manual; }
+
+  /* ================= Relleu i ombres =================
+     Títol de metall fos en relleu, esferes que projecten ombra sobre el fons,
+     botons i puntets amb volum, targetes amb vora bisellada. */
+  .orloj-cap h1{
+    background: linear-gradient(180deg, #fff6d0 0%, #f6d983 24%, #d4af37 48%, #8a6a1c 60%, #e3bf5f 76%, #fff0b8 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent !important; -webkit-text-fill-color:transparent;
+    text-shadow:none !important;
+    filter: drop-shadow(0 1px 0 #7a5c16) drop-shadow(0 1px 0 #5e4510) drop-shadow(0 1px 0 #43310a) drop-shadow(0 6px 7px rgba(0,0,0,.75));
+  }
+  body .cara-davant, body .cara-darrere, body .cara-davant-ast, body .cara-darrere-ast{
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.62));
+  }
+  .roda-punts span{ background: radial-gradient(circle at 35% 30%, #fff3c4 0%, #d4af37 50%, #5c4416 100%); box-shadow: 0 1px 2px rgba(0,0,0,.75); opacity:.7; }
+  .roda-punts span.actiu{ background: radial-gradient(circle at 35% 30%, #fffbe6 0%, #f3d27a 45%, #8a6a1c 100%); opacity:1; }
+  .roda-punts span.avis{ background: radial-gradient(circle at 35% 30%, #ffe0c0 0%, #e0803a 50%, #7a3510 100%); }
+  .orloj-boto{
+    background: radial-gradient(circle at 50% 28%, rgba(74,56,26,.9) 0%, rgba(22,16,8,.92) 70%);
+    border: 2px solid #b8923a;
+    box-shadow: inset 0 1.5px 0 rgba(255,240,200,.45), inset 0 -3px 5px rgba(0,0,0,.6), 0 4px 8px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.55);
+  }
+  .orloj-boto svg, .boto-idioma{ filter: drop-shadow(0 1px 1px rgba(0,0,0,.8)); }
+  .t-marc{ box-shadow: inset 0 1px 0 rgba(255,250,220,.75), inset 0 -1.5px 0 rgba(0,0,0,.45); }
+  .t-fons{ box-shadow: inset 0 2px 5px rgba(70,45,10,.38), inset 0 -1px 0 rgba(255,255,255,.4); }
+
+  /* En mode nocturn i Zz el relleu es retira: només les línies que fan llum */
+  .mode-zz .relleu{ display:none !important; }
+  .mode-zz .orloj-cap h1{ background:none !important; -webkit-text-fill-color: var(--brasa) !important; filter:none !important; }
+  .mode-zz body .cara-davant, .mode-zz body .cara-darrere{ filter:none !important; }
+  .mode-zz .orloj-boto{ box-shadow:none !important; }
+  .mode-zz .t-marc, .mode-zz .t-fons, .mode-nit .t-fons{ box-shadow:none; }
+  .mode-zz .roda-punts span{ box-shadow:none; }
+
+  /* ===== Fons negre texturat, sense plafó ni marc (com el model) ===== */
+  html, body{
+    background:
+      radial-gradient(ellipse at 50% 38%, rgba(60,52,40,.22) 0%, transparent 62%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(ellipse at 50% 45%, #141210 0%, #0b0a09 60%, #050404 100%) !important;
+    background-attachment: fixed !important;
+  }
+  .marc{ background: transparent !important; border-color: transparent !important; box-shadow: none !important; }
+  .marc::before, .marc::after{ display:none !important; }
+  .mode-zz .text-or{ fill: var(--brasa) !important; }
+  /* Títol medieval (text dins d'SVG): el mateix metall en relleu i la mateixa mida aparent */
+  .orloj-medieval .banderolaTitol text{ fill: url(#orText) !important; stroke:none !important; }
+  .orloj-medieval .banderolaTitol{ filter: drop-shadow(0 1px 0 #7a5c16) drop-shadow(0 1px 0 #5e4510) drop-shadow(0 1px 0 #43310a) drop-shadow(0 6px 7px rgba(0,0,0,.75)); }
+  @media (orientation: portrait){ .orloj-medieval .orloj-cap .banderolaTitol{ width: clamp(200px, 34svh, 330px) !important; margin-top: -1svh !important; margin-bottom: -1.4svh !important; } }
+  .mode-zz.orloj-medieval .banderolaTitol, .mode-zz .orloj-medieval .banderolaTitol{ filter:none !important; }
+  .mode-zz .orloj-medieval .banderolaTitol text{ fill: var(--brasa) !important; }
 </style>
 <link rel="manifest" href="orloj.webmanifest">
 <link rel="apple-touch-icon" href="orloj-icona-180.png">
@@ -1056,9 +1106,9 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   defs.appendChild(hubGrad);
 
   const lunaGranGrad = el('radialGradient', {id:'lunaGranBanda', cx:'38%', cy:'32%', r:'75%'});
-  lunaGranGrad.appendChild(el('stop', {offset:'0%', 'stop-color':'#faf3d9'}));
-  lunaGranGrad.appendChild(el('stop', {offset:'60%', 'stop-color':'#e6d19f'}));
-  lunaGranGrad.appendChild(el('stop', {offset:'100%', 'stop-color':'#b99a5c'}));
+  lunaGranGrad.appendChild(el('stop', {offset:'0%', 'stop-color':'#f6e2a2'}));
+  lunaGranGrad.appendChild(el('stop', {offset:'55%', 'stop-color':'#dcbd6c'}));
+  lunaGranGrad.appendChild(el('stop', {offset:'100%', 'stop-color':'#a88a3e'}));
   defs.appendChild(lunaGranGrad);
 
   const perlaGrad = el('radialGradient', {id:'perlaBanda', cx:'32%', cy:'28%', r:'75%'});
@@ -1144,21 +1194,73 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   filtreFusta.appendChild(el('feBlend', {in:'SourceGraphic', in2:'vetaRetallada', mode:'multiply'}));
   defs.appendChild(filtreFusta);
 
+  // ---------- Relleu i ombres (bisells, discos enfonsats, ombres projectades) ----------
+  function gradLin(id, stops, x1='0%', y1='0%', x2='100%', y2='100%'){
+    const g = el('linearGradient', {id, x1, y1, x2, y2});
+    stops.forEach(([o, c, a]) => g.appendChild(el('stop', {offset:o, 'stop-color':c, 'stop-opacity':a})));
+    defs.appendChild(g);
+  }
+  // bisell alçat: llum a dalt a l'esquerra, ombra a baix a la dreta
+  gradLin('bisellAlt', [['0%','#fff8dc',0.95],['42%','#fff8dc',0],['58%','#000',0],['100%','#000',0.7]]);
+  // bisell enfonsat (graó cap avall): al revés
+  gradLin('bisellBaix', [['0%','#000',0.65],['42%','#000',0],['58%','#fff8dc',0],['100%','#fff8dc',0.75]]);
+  function gradRad(id, cx, cy, r, stops){
+    const g = el('radialGradient', {id, cx, cy, r, gradientUnits:'userSpaceOnUse'});
+    stops.forEach(([o, c, a]) => g.appendChild(el('stop', {offset:o, 'stop-color':c, 'stop-opacity':a})));
+    defs.appendChild(g);
+  }
+  // disc enfonsat: fosc a la vora, net al centre
+  gradRad('enfonsatAst', 300, 300, 165, [['0.8','#000',0],['0.94','#000',0.28],['1','#000',0.7]]);
+  gradRad('enfonsatCal', 150, 150, 96, [['0.78','#000',0],['0.93','#000',0.3],['1','#000',0.75]]);
+  // ombra que l'anell zodiacal projecta sobre el vori, i la de l'anell negre exterior
+  gradRad('ombraZodi', 300, 300, 214, [['0.9','#2a1d05',0.45],['1','#2a1d05',0]]);
+  gradRad('ombraVora', 300, 300, 265, [['0.9','#2a1d05',0],['1','#2a1d05',0.4]]);
+  // vori amb vetes de marbre
+  const filtreMarbre = el('filter', {id:'marbre', x:'0%', y:'0%', width:'100%', height:'100%'});
+  filtreMarbre.appendChild(el('feTurbulence', {type:'fractalNoise', baseFrequency:'0.011 0.026', numOctaves:'5', seed:'7', result:'n'}));
+  filtreMarbre.appendChild(el('feColorMatrix', {in:'n', type:'matrix', values:'0 0 0 0 0.42  0 0 0 0 0.36  0 0 0 0 0.24  -2.6 0 0 0 1.45', result:'veta'}));
+  const fcMarbre = el('feComponentTransfer', {in:'veta', result:'vetaSuau'});
+  fcMarbre.appendChild(el('feFuncA', {type:'table', tableValues:'0 0 0.05 0.22 0.05 0 0'}));
+  filtreMarbre.appendChild(fcMarbre);
+  filtreMarbre.appendChild(el('feComposite', {in:'vetaSuau', in2:'SourceGraphic', operator:'in', result:'vetaDins'}));
+  filtreMarbre.appendChild(el('feMerge', {})).append(el('feMergeNode', {in:'SourceGraphic'}), el('feMergeNode', {in:'vetaDins'}));
+  defs.appendChild(filtreMarbre);
+  // or raspallat (estries fines)
+  const filtreRaspallat = el('filter', {id:'raspallat', x:'0%', y:'0%', width:'100%', height:'100%'});
+  filtreRaspallat.appendChild(el('feTurbulence', {type:'fractalNoise', baseFrequency:'0.9 0.006', numOctaves:'2', seed:'3', result:'n'}));
+  filtreRaspallat.appendChild(el('feColorMatrix', {in:'n', type:'matrix', values:'0 0 0 0 0.35  0 0 0 0 0.25  0 0 0 0 0.05  0 0 0 1.1 -0.45', result:'estria'}));
+  filtreRaspallat.appendChild(el('feComposite', {in:'estria', in2:'SourceGraphic', operator:'in', result:'estriaDins'}));
+  filtreRaspallat.appendChild(el('feMerge', {})).append(el('feMergeNode', {in:'SourceGraphic'}), el('feMergeNode', {in:'estriaDins'}));
+  defs.appendChild(filtreRaspallat);
+  gradLin('orText', [['0%','#fff3c2',1],['45%','#f0c65c',1],['100%','#a8811f',1]], '0%', '0%', '0%', '100%');
+  gradLin('orVora', [['0%','#fff2bf',1],['30%','#e7c35a',1],['60%','#b8902a',1],['100%','#6e5414',1]]);
+  // ombra de les busques sobre l'esfera
+  const filtreBusques = el('filter', {id:'ombraBusques', x:'-10%', y:'-10%', width:'125%', height:'125%'});
+  filtreBusques.appendChild(el('feDropShadow', {dx:'2.6', dy:'3.6', stdDeviation:'2.2', 'flood-color':'#140c00', 'flood-opacity':'0.55'}));
+  defs.appendChild(filtreBusques);
+
   svgExt.appendChild(defs);
+
+  // Reblons en relleu: ombra, cap daurat i reflex
+  function rebla(grup, x, y, r){
+    grup.appendChild(el('circle', {cx:x + r*0.35, cy:y + r*0.45, r:r*1.05, fill:'#000', opacity:'0.5', class:'relleu'}));
+    grup.appendChild(el('circle', {cx:x, cy:y, r, fill:'url(#rebloBanda)', stroke:'#3a2a08', 'stroke-width':r*0.18}));
+    grup.appendChild(el('circle', {cx:x - r*0.32, cy:y - r*0.36, r:r*0.32, fill:'#fffbe8', opacity:'0.85', class:'relleu'}));
+  }
+  const bisell = (pare, cx, cy, r, w, alt = true) =>
+    pare.appendChild(el('circle', {cx, cy, r, fill:'none', stroke: alt ? 'url(#bisellAlt)' : 'url(#bisellBaix)', 'stroke-width':w, class:'relleu'}));
 
   // ---------- Anells de fons (ara integrats al disc giratori: tot l'esfera
   // gira sencera, sense deixar cap anell estàtic enrere) ----------
   svg.appendChild(el('circle', {cx:CX, cy:CY, r:298, fill:'none', stroke:'#5c4a1c', 'stroke-width':2}));
-  svg.appendChild(el('circle', {cx:CX, cy:CY, r:293, fill:'url(#fustaBanda)', filter:'url(#texturaFusta)'}));
+  svg.appendChild(el('circle', {cx:CX, cy:CY, r:297, fill:'url(#orVora)', filter:'url(#relleuAnell)'}));
 
   // Reblons al voltant de la vora exterior
   const reblonsGrup = el('g', {});
+  bisell(svg, CX, CY, 296.5, 3);
   for(let i=0;i<36;i++){
     const a = i*10;
-    const rx = polarX(CX,295,a), ry = polarY(CY,295,a);
-    reblonsGrup.appendChild(el('circle', {
-      cx:rx, cy:ry, r:2.2, fill:'url(#rebloBanda)', stroke:'#3a2a08', 'stroke-width':0.4, filter:'url(#relleuPetit)'
-    }));
+    rebla(reblonsGrup, polarX(CX,291.5,a), polarY(CY,291.5,a), 3.1);
   }
   svg.appendChild(reblonsGrup);
 
@@ -1181,7 +1283,11 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   svg.appendChild(anticGrup);
 
   // Anell romà (funcional — hores)
-  svg.appendChild(el('circle', {cx:CX, cy:CY, r:265, fill:'url(#ivoriBanda)', stroke:'#8a6d1f', 'stroke-width':1, filter:'url(#texturaMetall)'}));
+  svg.appendChild(el('circle', {cx:CX, cy:CY, r:265, fill:'url(#ivoriBanda)', stroke:'#8a6d1f', 'stroke-width':1, filter:'url(#marbre)'}));
+  svg.appendChild(el('circle', {cx:CX, cy:CY, r:265, fill:'url(#ombraVora)', class:'relleu'}));
+  svg.appendChild(el('circle', {cx:CX, cy:CY, r:265.5, fill:'none', stroke:'url(#orBanda)', 'stroke-width':3, class:'relleu'}));
+  bisell(svg, CX, CY, 265.5, 3);
+  bisell(svg, CX, CY, 285.5, 1.4, false);
   const romans = ['XII','I','II','III','IIII','V','VI','VII','VIII','IX','X','XI'];
   const romGrup = el('g', {});
   const estiramentRoman = 1.45;
@@ -1247,6 +1353,7 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   svg.appendChild(el('circle', {cx:CX, cy:CY, r:195, fill:'none', stroke:'#6e5416', 'stroke-width':2}));
 
   // ---------- Anell zodiacal (gira segons l'època de l'any) ----------
+  svg.appendChild(el('circle', {cx:CX, cy:CY, r:214, fill:'url(#ombraZodi)', class:'relleu'}));
   const zodiGrup = el('g', {id:'zodiGrup'});
   zodiGrup.appendChild(el('circle', {cx:CX, cy:CY, r:195, fill:'url(#orBanda)', filter:'url(#relleuAnell)'}));
   zodiGrup.appendChild(el('circle', {cx:CX, cy:CY, r:165, fill:'var(--pedra)', style:'fill:#100c08'}));
@@ -1298,6 +1405,8 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     zodiGrup.appendChild(g);
   });
   svg.appendChild(zodiGrup);
+  bisell(svg, CX, CY, 194, 2.6);
+  bisell(svg, CX, CY, 166, 2.2, false);
 
   // punter fix del zodíac (marca "sol actual")
   const puntaZodiac = el('g', {transform: `translate(${CX}, ${CY-180}) scale(0.9, 1.1)`});
@@ -1360,10 +1469,11 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   svg.appendChild(cometaLluna);
 
   const lunaGranGrup = el('g', {id:'lunaGranGrup', transform:`translate(${CX}, ${CY})`});
-  const lunaGranLit = el('path', {id:'lunaGranLit', fill:'url(#lunaGranBanda)', stroke:'#8a6d1f', 'stroke-width':1.5, 'stroke-opacity':0.85});
+  const lunaGranLit = el('path', {id:'lunaGranLit', fill:'url(#lunaGranBanda)', stroke:'#8a6d1f', 'stroke-width':1.5, 'stroke-opacity':0.85, filter:'url(#raspallat)'});
   lunaGranGrup.appendChild(lunaGranLit);
   svg.appendChild(lunaGranGrup);
 
+  svg.appendChild(el('circle', {cx:CX, cy:CY, r:165, fill:'url(#enfonsatAst)', class:'relleu', 'pointer-events':'none'}));
   svg.appendChild(el('circle', {cx:CX, cy:CY, r:165, fill:'none', stroke:'#8a6d1f', 'stroke-width':1.5}));
 
   // ---------- Busques ----------
@@ -1378,7 +1488,9 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
 
   // busca de les hores (sol)
   const busquaHora = fletxa('busquaHora', 172, 9, 'url(#orBanda)');
-  svg.appendChild(busquaHora);
+  const grupBusques = el('g', {filter:'url(#ombraBusques)'});
+  svg.appendChild(grupBusques);
+  grupBusques.appendChild(busquaHora);
   const solPunta = el('g', {id:'solPunta'});
   solPunta.appendChild(el('circle', {cx:0.9, cy:1.1, r:9.5, fill:'#5c3d0a', opacity:'0.4'}));
   // Raigs ondulats (com flames), alternant llargada per a un aire més orgànic
@@ -1401,27 +1513,28 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   solCara.appendChild(el('path', {d:'M 0,0 L -0.5,1.8 L 0.3,2.1'}));
   solCara.appendChild(el('path', {d:'M -2.1,3.7 Q 0,5 2.1,3.7'}));
   solPunta.appendChild(solCara);
-  svg.appendChild(solPunta);
+  grupBusques.appendChild(solPunta);
 
   // busca dels minuts (lluna)
   const busquaMinut = fletxa('busquaMinut', 236, 7, '#cdd6e6');
-  svg.appendChild(busquaMinut);
+  grupBusques.appendChild(busquaMinut);
   const lunaPunta = el('g', {id:'lunaPunta'});
   lunaPunta.appendChild(el('circle', {cx:0, cy:0, r:12, fill:'url(#lunaDarkBanda)', stroke:'#8a97b8', 'stroke-width':1}));
   const lunaLit = el('path', {id:'lunaLit', fill:'url(#lunaLitBanda)'});
   lunaPunta.appendChild(lunaLit);
-  svg.appendChild(lunaPunta);
+  grupBusques.appendChild(lunaPunta);
 
   // busca dels segons
   const busquaSegon = el('line', {
     id:'busquaSegon', x1:CX, y1:CY+22, x2:CX, y2:CY-258,
     stroke:'#8a1f1f', 'stroke-width':1.6, 'stroke-linecap':'round'
   });
-  svg.appendChild(busquaSegon);
+  grupBusques.appendChild(busquaSegon);
 
   // eix central
-  svg.appendChild(el('circle', {cx:CX, cy:CY, r:14, fill:'url(#nucli)', stroke:'#4a3a10', 'stroke-width':1.5, filter:'url(#relleuPetit)'}));
-  svg.appendChild(el('circle', {cx:CX, cy:CY, r:4, fill:'#5c1616'}));
+  grupBusques.appendChild(el('circle', {cx:CX, cy:CY, r:14, fill:'url(#nucli)', stroke:'#4a3a10', 'stroke-width':1.5, filter:'url(#relleuPetit)'}));
+  grupBusques.appendChild(el('circle', {cx:CX - 4, cy:CY - 4.5, r:4, fill:'#fffbe8', opacity:'0.7', class:'relleu'}));
+  grupBusques.appendChild(el('circle', {cx:CX, cy:CY, r:4, fill:'#5c1616'}));
 
   // ==================== CALENDARI ====================
   const cal = document.getElementById('calendari');
@@ -1430,12 +1543,10 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
 
   // Reblons al voltant de la vora del calendari
   const reblonsCalGrup = el('g', {});
+  bisell(cal, CCX, CCY, 147, 2.2);
   for(let i=0;i<24;i++){
     const a = i*15;
-    const rx = polarX(CCX,145,a), ry = polarY(CCY,145,a);
-    reblonsCalGrup.appendChild(el('circle', {
-      cx:rx, cy:ry, r:1.6, fill:'url(#rebloBanda)', stroke:'#3a2a08', 'stroke-width':0.3, filter:'url(#relleuPetit)'
-    }));
+    rebla(reblonsCalGrup, polarX(CCX,141.3,a), polarY(CCY,141.3,a), 2.4);
   }
   cal.appendChild(reblonsCalGrup);
 
@@ -1465,6 +1576,7 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     calGrup.appendChild(t);
   });
   calGrup.appendChild(el('circle', {cx:CCX, cy:CCY, r:96, fill:'url(#ceil)'}));
+  calGrup.appendChild(el('circle', {cx:CCX, cy:CCY, r:96, fill:'url(#enfonsatCal)', class:'relleu'}));
   const estelsAmbientCal = el('g', {fill:'#f2d98a'});
   for(let i=0;i<18;i++){
     const a = pseudoRand(i*11.7+31)*360;
@@ -1476,13 +1588,15 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   calGrup.appendChild(estelsAmbientCal);
   const estelsCal = el('g', {id:'estelsCal'});
   calGrup.appendChild(estelsCal);
-  const diaSetmanaText = el('text', {id:'diaSetmanaAbrev', x:CCX, y:CCY+40, 'text-anchor':'middle', 'font-size':'15', 'font-weight':'700', 'letter-spacing':'1.6', fill:COLORS_TEXT.diaSetmana});
+  const diaSetmanaText = el('text', {id:'diaSetmanaAbrev', x:CCX, y:CCY+40, 'text-anchor':'middle', 'font-size':'15', 'font-weight':'700', 'letter-spacing':'1.6', fill:'url(#orText)', class:'text-or'});
   calGrup.appendChild(diaSetmanaText);
-  const diaText = el('text', {id:'diaNum', x:CCX, y:CCY+78, 'text-anchor':'middle', 'font-size':'40', fill:COLORS_TEXT.diaNum});
+  const diaText = el('text', {id:'diaNum', x:CCX, y:CCY+78, 'text-anchor':'middle', 'font-size':'40', fill:'url(#orText)', class:'text-or'});
   calGrup.appendChild(diaText);
   cal.appendChild(calGrup);
 
   cal.appendChild(el('circle', {cx:CCX, cy:CCY, r:138, fill:'none', stroke:'#8a6d1f', 'stroke-width':1}));
+  bisell(cal, CCX, CCY, 135, 1.6, false);
+  bisell(cal, CCX, CCY, 96.6, 1.6, false);
   const puntaMes = el('g', {transform: `translate(${CCX}, ${CCY-117}) scale(0.55, 1.0)`});
   puntaMes.appendChild(el('path', {
     d: fletxaFerroPath,
@@ -1743,14 +1857,23 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     const idxSigne = indexZodiacActual(migdia);
     const desplacY = -32;
     const escalaConstelacio = 1.33;
-    constelacions[idxSigne].forEach(estrella=>{
-      const ex = CCX + estrella[0]*escalaConstelacio, ey = CCY + estrella[1]*escalaConstelacio + desplacY;
-      const mida = estrella[2] * 1.6 * escalaConstelacio;
-      estelsCal.appendChild(el('circle', {cx:ex, cy:ey, r: mida*1.8, fill:'#fff6db', opacity:'0.15'}));
+    const punts = constelacions[idxSigne].map(e => [CCX + e[0]*escalaConstelacio, CCY + e[1]*escalaConstelacio + desplacY, e[2]]);
+    const dins = [0], linies = el('g', {stroke:'#e9c46a', 'stroke-width':0.7, opacity:'0.7', 'stroke-linecap':'round', class:'relleu'});
+    while (dins.length < punts.length){
+      let millor = null;
+      dins.forEach(a => punts.forEach((q, b) => { if (dins.includes(b)) return;
+        const d = Math.hypot(punts[a][0]-q[0], punts[a][1]-q[1]); if (!millor || d < millor[0]) millor = [d, a, b]; }));
+      dins.push(millor[2]);
+      linies.appendChild(el('line', {x1:punts[millor[1]][0], y1:punts[millor[1]][1], x2:punts[millor[2]][0], y2:punts[millor[2]][1]}));
+    }
+    estelsCal.appendChild(linies);
+    punts.forEach(([ex, ey, m])=>{
+      const mida = m * 1.6 * escalaConstelacio;
+      estelsCal.appendChild(el('circle', {cx:ex, cy:ey, r: mida*2.1, fill:'#f6cf6a', opacity:'0.22'}));
       estelsCal.appendChild(el('path', {
         d: pathEstel(mida*1.3),
         transform: `translate(${ex}, ${ey})`,
-        fill:'#fff6db', opacity:'0.9'
+        fill:'#fff1c4', opacity:'0.95'
       }));
     });
   }
