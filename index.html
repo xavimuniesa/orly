@@ -783,6 +783,25 @@
   @media (orientation: portrait){ .orloj-medieval .orloj-cap .banderolaTitol{ width: clamp(200px, 34svh, 330px) !important; margin-top: -1svh !important; margin-bottom: -1.4svh !important; } }
   .mode-zz.orloj-medieval .banderolaTitol, .mode-zz .orloj-medieval .banderolaTitol{ filter:none !important; }
   .mode-zz .orloj-medieval .banderolaTitol text{ fill: var(--brasa) !important; }
+
+  /* La bola de Júpiter: mentre l'esfera de dalt gira, s'esvaeix (si no, la
+     vora i la cara de l'esfera la tapen a mitges i sembla transparent) i
+     torna a aparèixer quan s'atura. També una mica per sobre de la cara,
+     perquè en repòs no comparteixi el mateix pla. */
+  .planeta-orbita{ transform: translate(-50%, -50%) translateZ(17px) !important; }
+  .astrolabi-flip.girant .planeta-orbita{ animation: orlojPlanetaGir 10.5s linear; }
+  @keyframes orlojPlanetaGir{
+    0%    { opacity: 1; visibility: visible; }
+    3%    { opacity: 0; visibility: visible; }
+    3.1%  { opacity: 0; visibility: hidden; }
+    96%   { opacity: 0; visibility: hidden; }
+    96.1% { opacity: 0; visibility: visible; }
+    100%  { opacity: 1; visibility: visible; }
+  }
+
+  /* La bola del planeta s'amaga suaument mentre l'esfera gira (evita l'efecte de transparència) */
+  .planeta-orbita{ transition: opacity .35s ease; }
+  .astrolabi-flip.girant .planeta-orbita{ opacity:0; }
 </style>
 <link rel="manifest" href="orloj.webmanifest">
 <link rel="apple-touch-icon" href="orloj-icona-180.png">
@@ -1469,8 +1488,20 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   svg.appendChild(cometaLluna);
 
   const lunaGranGrup = el('g', {id:'lunaGranGrup', transform:`translate(${CX}, ${CY})`});
-  const lunaGranLit = el('path', {id:'lunaGranLit', fill:'url(#lunaGranBanda)', stroke:'#8a6d1f', 'stroke-width':1.5, 'stroke-opacity':0.85, filter:'url(#raspallat)'});
+  const lunaGranLit = el('path', {id:'lunaGranLit', fill:'url(#lunaGranBanda)', stroke:'#8a6d1f', 'stroke-width':1.5, 'stroke-opacity':0.85});
   lunaGranGrup.appendChild(lunaGranLit);
+  // Estries corbes (meridians) dins la part il·luminada: segueixen la curvatura
+  // de l'esfera i li donen volum, en lloc de ratlles paral·leles.
+  const clipLluna = el('clipPath', {id:'clipLlunaGran'});
+  clipLluna.appendChild(el('use', {href:'#lunaGranLit'}));
+  defs.appendChild(clipLluna);
+  const estries = el('g', {'clip-path':'url(#clipLlunaGran)', fill:'none', class:'relleu', 'pointer-events':'none'});
+  for (let i = 1; i <= 34; i++){
+    const rx = 165 * Math.sin(i / 35 * Math.PI / 2);
+    estries.appendChild(el('ellipse', {cx:CX, cy:CY, rx:rx.toFixed(2), ry:165,
+      stroke: i % 2 ? '#fff4cf' : '#6e5216', 'stroke-opacity': i % 2 ? 0.32 : 0.22, 'stroke-width':1}));
+  }
+  lunaGranGrup.appendChild(estries);
   svg.appendChild(lunaGranGrup);
 
   svg.appendChild(el('circle', {cx:CX, cy:CY, r:165, fill:'url(#enfonsatAst)', class:'relleu', 'pointer-events':'none'}));
