@@ -493,7 +493,7 @@
   .t-titol{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-titol); letter-spacing:.14em; text-transform:uppercase; line-height:1.15;
     color: var(--accent); display:flex; align-items:center; justify-content:center; gap:10px; margin: 0 0 calc(6px * var(--k)); white-space:nowrap; flex:0 0 auto; }
   .t-titol::before, .t-titol::after{ content:''; width:22px; height:1px; background:currentColor; opacity:.5; }
-  .orloj-medieval .t-titol{ font-family:'Grenze Gotisch', serif; font-weight:600; letter-spacing:.02em; text-transform:none; font-size: calc(var(--f-titol) * 1.3); }
+  body .t-titol{ font-family:'Grenze Gotisch', serif; font-weight:600; letter-spacing:.02em; text-transform:none; font-size: calc(var(--f-titol) * 1.3); }
   .t-files{ width:100%; margin-top:auto; }
   .t-fila{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding: calc(5px * var(--k)) 0; border-bottom:1px solid var(--ratlla); }
   .t-fila:last-child{ border-bottom:0; }
@@ -516,7 +516,7 @@
   .cal-cap{ display:flex; align-items:center; justify-content:space-between; width:100%; margin-bottom: calc(4px * var(--k)); flex:0 0 auto; }
   .cal-titol{ font-family:'Cinzel', serif; font-weight:700; font-size: var(--f-titol); letter-spacing:.1em; text-transform:uppercase; color: var(--accent); cursor:pointer; white-space:nowrap; }
   .cal-titol small{ font-weight:600; letter-spacing:.06em; margin-left:.4em; color: var(--tinta2); }
-  .orloj-medieval .cal-titol{ font-family:'Grenze Gotisch', serif; font-weight:600; text-transform:none; letter-spacing:.02em; font-size: calc(var(--f-titol) * 1.3); }
+  body .cal-titol{ font-family:'Grenze Gotisch', serif; font-weight:600; text-transform:none; letter-spacing:.02em; font-size: calc(var(--f-titol) * 1.3); }
   .cal-b{ flex:0 0 auto; width: calc(30px * var(--k)); height: calc(30px * var(--k)); border-radius:50%; border:1.5px solid var(--accent); background:transparent; color: var(--accent);
     font: 700 calc(17px * var(--k)) 'Cinzel', serif; line-height:1; display:grid; place-items:center; cursor:pointer; padding:0 0 2px; }
   .cal-finestra{ position:relative; width:100%; flex:1 1 auto; min-height:0; overflow:hidden; }
@@ -1609,9 +1609,31 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
   const busquaMinut = fletxa('busquaMinut', 236, 7.5, 'acer');
   grupBusques.appendChild(busquaMinut);
   const lunaPunta = el('g', {id:'lunaPunta'});
-  lunaPunta.appendChild(el('circle', {cx:0, cy:0, r:12, fill:'url(#lunaDarkBanda)', stroke:'#8a97b8', 'stroke-width':1}));
-  const lunaLit = el('path', {id:'lunaLit', fill:'url(#lunaLitBanda)'});
+  // Lluna més gran, amb volum: la part il·luminada s'ombreja com una esfera
+  // (llum dalt a l'esquerra, vora enfosquida), amb mars suaus i un reflex.
+  const RL = 17.5;
+  const gVol = el('radialGradient', {id:'lunaVolBanda', gradientUnits:'userSpaceOnUse', cx:-5, cy:-6, r:RL*1.35, fx:-6.5, fy:-7.5});
+  [['0','#fffef7'],['0.35','#f1ecd8'],['0.7','#cfc6a6'],['1','#8f8668']].forEach(([o,c]) => gVol.appendChild(el('stop', {offset:o, 'stop-color':c})));
+  defs.appendChild(gVol);
+  const gFosc = el('radialGradient', {id:'lunaFoscVol', gradientUnits:'userSpaceOnUse', cx:-4, cy:-5, r:RL*1.3});
+  [['0','#4a5470'],['0.7','#262c3e'],['1','#12151f']].forEach(([o,c]) => gFosc.appendChild(el('stop', {offset:o, 'stop-color':c})));
+  defs.appendChild(gFosc);
+  lunaPunta.appendChild(el('circle', {cx:0, cy:0, r:RL, fill:'url(#lunaFoscVol)', stroke:'#7d89a8', 'stroke-width':0.9}));
+  const lunaLit = el('path', {id:'lunaLit', fill:'url(#lunaVolBanda)'});
   lunaPunta.appendChild(lunaLit);
+  const clipLlunaPetita = el('clipPath', {id:'clipLlunaPetita'});
+  clipLlunaPetita.appendChild(el('use', {href:'#lunaLit'}));
+  defs.appendChild(clipLlunaPetita);
+  const detallLluna = el('g', {'clip-path':'url(#clipLlunaPetita)', 'pointer-events':'none'});
+  // mars (taques fosques suaus)
+  [[-4,-3,4.2,3.2],[3.5,-5.5,3,2.4],[5,3,3.6,2.6],[-2,6,2.4,1.8],[-8,4,2,1.6]].forEach(([x,y,rx,ry]) =>
+    detallLluna.appendChild(el('ellipse', {cx:x, cy:y, rx, ry, fill:'#8f8a74', opacity:'0.28', class:'relleu'})));
+  // reflex de llum i petit punt brillant
+  detallLluna.appendChild(el('ellipse', {cx:-6, cy:-7, rx:6.5, ry:4.4, fill:'url(#gradEspecularLluna)', transform:'rotate(-35,-6,-7)', class:'relleu'}));
+  detallLluna.appendChild(el('ellipse', {cx:-7, cy:-8.3, rx:2, ry:1.2, fill:'#ffffff', opacity:'0.75', transform:'rotate(-35,-7,-8.3)', class:'relleu'}));
+  lunaPunta.appendChild(detallLluna);
+  // vora fina perquè es llegeixi sobre el vori
+  lunaPunta.appendChild(el('circle', {cx:0, cy:0, r:RL, fill:'none', stroke:'#5c6684', 'stroke-width':0.7, opacity:'0.8'}));
   grupBusques.appendChild(lunaPunta);
 
   // busca dels segons
@@ -1919,7 +1941,7 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     const ss = String(s).padStart(2,'0');
 
     const fase = faseLunar(ara);
-    lunaLit.setAttribute('d', pathLluna(12, fase));
+    lunaLit.setAttribute('d', pathLluna(RL, fase));
     lunaGranLit.setAttribute('d', pathLluna(165, fase));
     try {
       // el reflex i el centre de llum del degradat se situen dalt de la zona il·luminada
@@ -4265,31 +4287,58 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     }
     // Notícies
     const MAX_N = 12;
-    const INTERMEDIARIS = [ u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u), u => 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u), u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) ];
+    // Intermediaris (els feeds no deixen llegir-se directament des d'una altra web).
+    // Es proven tots alhora i es fa servir el primer que respon amb dades bones.
+    const INTERMEDIARIS = [
+      { url: u => 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u) },
+      { url: u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+      { url: u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u), json: true },
+      { url: u => 'https://everyorigin.jwvbremen.nl/api/get?url=' + encodeURIComponent(u), json: true },
+      { url: u => 'https://api.cors.lol/?url=' + encodeURIComponent(u) },
+      { url: u => 'https://corsproxy.io/?url=' + encodeURIComponent(u) }
+    ];
+    const qualsevol = proms => new Promise((res, rej) => {   // Promise.any compatible amb iPhones antics
+      let pendents = proms.length; if (!pendents) rej(new Error('cap'));
+      proms.forEach(p => p.then(res, () => { if (--pendents === 0) rej(new Error('cap')); }));
+    });
+    function textIntermediari(u){
+      return qualsevol(INTERMEDIARIS.map(m => ambTemps(fetch(m.url(u), { cache: 'no-store' }), 10000)
+        .then(r => { if (!r.ok) throw new Error('http'); return m.json ? r.json().then(j => (j && j.contents) || '') : r.text(); })
+        .then(t => { if (!t || t.length < 200) throw new Error('buit'); return t; })));
+    }
     function itemsRss(xml){
       const doc = new DOMParser().parseFromString(xml, 'text/xml');
       return [...doc.querySelectorAll('item')].map(it => ({ title: (it.querySelector('title') || {}).textContent || '', link: (it.querySelector('link') || {}).textContent || '', pubDate: (it.querySelector('pubDate') || {}).textContent || '' }));
     }
-    function rssIntermediari(rss, i){
-      if (i >= INTERMEDIARIS.length) return Promise.reject(new Error('cap'));
-      return ambTemps(fetch(INTERMEDIARIS[i](rss), { cache: 'no-store' }), 9000).then(r => { if (!r.ok) throw new Error('http'); return r.text(); })
-        .then(x => { const it = itemsRss(x); if (!it.length) throw new Error('buit'); return it; }).catch(() => rssIntermediari(rss, i + 1));
+    // un intermediari pot respondre amb una pàgina d'error: només val si porta titulars
+    function rssIntermediari(rss){
+      return qualsevol(INTERMEDIARIS.map(m => ambTemps(fetch(m.url(rss), { cache: 'no-store' }), 10000)
+        .then(r => { if (!r.ok) throw new Error('http'); return m.json ? r.json().then(j => (j && j.contents) || '') : r.text(); })
+        .then(x => { const it = itemsRss(x); if (!it.length) throw new Error('buit'); return it; })));
     }
     function rss2json(rss){
-      return ambTemps(fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rss)), 9000).then(r => r.json())
+      return ambTemps(fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rss)), 10000).then(r => r.json())
         .then(j => { const it = (j && j.items) || []; if (!it.length) throw new Error('buit'); return it; });
     }
     function fil(rss){
-      return rssIntermediari(rss, 0).catch(() => rss2json(rss)).then(items => items.map(it => ({ titol: neteja(it.title), url: neteja(it.link), d: Date.parse(it.pubDate || '') || 0 }))
+      return qualsevol([rssIntermediari(rss), rss2json(rss)]).then(items => items.map(it => ({ titol: neteja(it.title), url: neteja(it.link), d: Date.parse(it.pubDate || '') || 0 }))
         .filter(it => it.titol && it.url).sort((x, y) => y.d - x.d).slice(0, MAX_N));
     }
     function google(q, hl, gl, treu){
       const rss = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + `&hl=${hl}&gl=${gl}&ceid=${gl}:${hl.slice(0, 2)}`;
-      return rss2json(rss).catch(() => rssIntermediari(rss, 0)).then(items => items.slice(0, MAX_N).map(it => { let titol = neteja(it.title); titol = treu ? titol.replace(treu, '') : titol.replace(/\s+-\s+([^-]+)$/, ' · $1'); return { titol, url: it.link }; }));
+      return qualsevol([rss2json(rss), rssIntermediari(rss)]).then(items => items.slice(0, MAX_N).map(it => { let titol = neteja(it.title); titol = treu ? titol.replace(treu, '') : titol.replace(/\s+-\s+([^-]+)$/, ' · $1'); return { titol, url: it.link }; }));
     }
-    function acn(i = 0){
-      if (i >= INTERMEDIARIS.length) return Promise.reject(new Error('cap'));
-      return ambTemps(fetch(INTERMEDIARIS[i]('https://www.acn.cat/'), { cache: 'no-store' }), 9000).then(r => { if (!r.ok) throw new Error('http'); return r.text(); })
+    // Reserva sense intermediari: el cercador de notícies GDELT, per llengua de la font
+    function gdelt(consulta){
+      const u = 'https://api.gdeltproject.org/api/v2/doc/doc?query=' + encodeURIComponent(consulta) + '&mode=artlist&maxrecords=30&sort=datedesc&timespan=1d&format=json';
+      return ambTemps(fetch(u), 10000).then(r => r.json()).then(j => {
+        const vist = {}, r = [];
+        ((j && j.articles) || []).forEach(a => { const t = neteja(a.title || ''); if (t.length < 25 || vist[t]) return; vist[t] = 1; r.push({ titol: t, url: a.url }); });
+        if (!r.length) throw new Error('buit'); return r.slice(0, MAX_N);
+      });
+    }
+    function acn(){
+      return textIntermediari('https://www.acn.cat/')
         .then(html => {
           const doc = new DOMParser().parseFromString(html, 'text/html');
           const enllacos = [...doc.querySelectorAll('a[href*="/new/"]')];
@@ -4298,24 +4347,31 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
           const vist = {}, ordre = [];
           triats.forEach(a => { let h = a.getAttribute('href') || ''; if (h.indexOf('http') !== 0) h = 'https://www.acn.cat' + (h.charAt(0) === '/' ? '' : '/') + h; const t = neteja(a.textContent); if (t.length < 20) return; if (!vist[h]){ vist[h] = t; ordre.push(h); } else if (t.length > vist[h].length) vist[h] = t; });
           const r = ordre.slice(0, MAX_N).map(h => ({ titol: vist[h], url: h })); if (!r.length) throw new Error('buit'); return r;
-        }).catch(() => acn(i + 1));
+        });
     }
     const FONTS = {
-      ca: [ { peu: 'Agència Catalana de Notícies', web: 'https://www.acn.cat/', load: () => acn() }, { peu: 'Agència Catalana de Notícies', web: 'https://www.acn.cat/', load: () => google('site:acn.cat when:1d', 'ca', 'ES', /\s+-\s+(ACN|acn\.cat|Agència Catalana de Notícies)\s*$/i) } ],
-      oc: [ { peu: 'Jornalet', web: 'https://www.jornalet.com/', load: () => google('site:jornalet.com', 'fr', 'FR', /\s+-\s+(Jornalet|jornalet\.com)\s*$/i) }, { peu: 'Agència Catalana de Notícies', web: 'https://www.acn.cat/', load: () => acn() } ],
-      gl: [ { peu: 'Nós Diario', web: 'https://www.nosdiario.gal/', load: () => fil('https://www.nosdiario.gal/rss') }, { peu: 'Europa Press Galicia', web: 'https://www.europapress.es/galicia/', load: () => google('site:europapress.es/galicia when:1d', 'gl', 'ES', /\s+-\s+(Europa Press|europapress\.es).*$/i) }, { peu: 'Google Noticias', web: 'https://news.google.com/?hl=gl&gl=ES&ceid=ES:gl', load: () => google('Galicia when:1d', 'gl', 'ES') } ],
-      fr: [ { peu: 'France 24', web: 'https://www.france24.com/fr/', load: () => fil('https://www.france24.com/fr/rss') }, { peu: 'AFP (Google Actualités)', web: 'https://www.afp.com/fr', load: () => google('site:afp.com when:2d', 'fr', 'FR', /\s+-\s+(AFP|afp\.com).*$/i) } ],
-      en: [ { peu: 'Reuters (Google News)', web: 'https://www.reuters.com/world/uk/', load: () => google('site:reuters.com when:1d', 'en-GB', 'GB', /\s+-\s+Reuters\s*$/i) }, { peu: 'The Independent', web: 'https://www.independent.co.uk/news/uk', load: () => fil('https://www.independent.co.uk/news/uk/rss') } ],
-      de: [ { peu: 'dpa (ZEIT ONLINE)', web: 'https://www.zeit.de/news/index', load: () => fil('https://newsfeed.zeit.de/news/index') }, { peu: 'stern', web: 'https://www.stern.de/', load: () => fil('https://www.stern.de/feed/standard/all/') } ],
-      it: [ { peu: 'ANSA · Ultima ora', web: 'https://www.ansa.it/', load: () => fil('https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml') }, { peu: 'Adnkronos', web: 'https://www.adnkronos.com/', load: () => fil('https://www.adnkronos.com/RSS_Ultimora.xml') } ],
-      cs: [ { peu: 'iROZHLAS', web: 'https://www.irozhlas.cz/', load: () => fil('https://www.irozhlas.cz/rss/irozhlas') }, { peu: 'ČT24', web: 'https://ct24.ceskatelevize.cz/', load: () => fil('https://ct24.ceskatelevize.cz/rss/hlavni-zpravy') }, { peu: 'Google Zprávy', web: 'https://news.google.com/?hl=cs&gl=CZ&ceid=CZ:cs', load: () => google('Česko when:1d', 'cs', 'CZ') } ]
+      ca: [ { peu: 'Agència Catalana de Notícies', web: 'https://www.acn.cat/', load: () => acn() }, { peu: 'Agència Catalana de Notícies', web: 'https://www.acn.cat/', load: () => google('site:acn.cat when:1d', 'ca', 'ES', /\s+-\s+(ACN|acn\.cat|Agència Catalana de Notícies)\s*$/i) }, { peu: 'Notícies en català (GDELT)', web: 'https://www.acn.cat/', load: () => gdelt('sourcelang:catalan') } ],
+      oc: [ { peu: 'Jornalet', web: 'https://www.jornalet.com/', load: () => google('site:jornalet.com', 'fr', 'FR', /\s+-\s+(Jornalet|jornalet\.com)\s*$/i) }, { peu: 'Agència Catalana de Notícies', web: 'https://www.acn.cat/', load: () => acn() }, { peu: 'Notícies en català (GDELT)', web: 'https://www.jornalet.com/', load: () => gdelt('sourcelang:catalan') } ],
+      gl: [ { peu: 'Nós Diario', web: 'https://www.nosdiario.gal/', load: () => fil('https://www.nosdiario.gal/rss') }, { peu: 'Europa Press Galicia', web: 'https://www.europapress.es/galicia/', load: () => google('site:europapress.es/galicia when:1d', 'gl', 'ES', /\s+-\s+(Europa Press|europapress\.es).*$/i) }, { peu: 'Google Noticias', web: 'https://news.google.com/?hl=gl&gl=ES&ceid=ES:gl', load: () => google('Galicia when:1d', 'gl', 'ES') }, { peu: 'Novas en galego (GDELT)', web: 'https://www.nosdiario.gal/', load: () => gdelt('sourcelang:galician') } ],
+      fr: [ { peu: 'France 24', web: 'https://www.france24.com/fr/', load: () => fil('https://www.france24.com/fr/rss') }, { peu: 'AFP (Google Actualités)', web: 'https://www.afp.com/fr', load: () => google('site:afp.com when:2d', 'fr', 'FR', /\s+-\s+(AFP|afp\.com).*$/i) }, { peu: 'Le Monde', web: 'https://www.lemonde.fr/', load: () => fil('https://www.lemonde.fr/rss/une.xml') }, { peu: 'Actualités en français (GDELT)', web: 'https://www.france24.com/fr/', load: () => gdelt('sourcelang:french sourcecountry:france') } ],
+      en: [ { peu: 'Reuters (Google News)', web: 'https://www.reuters.com/world/uk/', load: () => google('site:reuters.com when:1d', 'en-GB', 'GB', /\s+-\s+Reuters\s*$/i) }, { peu: 'The Independent', web: 'https://www.independent.co.uk/news/uk', load: () => fil('https://www.independent.co.uk/news/uk/rss') }, { peu: 'BBC News', web: 'https://www.bbc.co.uk/news', load: () => fil('https://feeds.bbci.co.uk/news/rss.xml') }, { peu: 'News in English (GDELT)', web: 'https://www.bbc.co.uk/news', load: () => gdelt('sourcelang:english sourcecountry:unitedkingdom') } ],
+      de: [ { peu: 'dpa (ZEIT ONLINE)', web: 'https://www.zeit.de/news/index', load: () => fil('https://newsfeed.zeit.de/news/index') }, { peu: 'stern', web: 'https://www.stern.de/', load: () => fil('https://www.stern.de/feed/standard/all/') }, { peu: 'tagesschau', web: 'https://www.tagesschau.de/', load: () => fil('https://www.tagesschau.de/index~rss2.xml') }, { peu: 'Nachrichten auf Deutsch (GDELT)', web: 'https://www.tagesschau.de/', load: () => gdelt('sourcelang:german sourcecountry:germany') } ],
+      it: [ { peu: 'ANSA · Ultima ora', web: 'https://www.ansa.it/', load: () => fil('https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml') }, { peu: 'Adnkronos', web: 'https://www.adnkronos.com/', load: () => fil('https://www.adnkronos.com/RSS_Ultimora.xml') }, { peu: 'Notizie in italiano (GDELT)', web: 'https://www.ansa.it/', load: () => gdelt('sourcelang:italian sourcecountry:italy') } ],
+      cs: [ { peu: 'iROZHLAS', web: 'https://www.irozhlas.cz/', load: () => fil('https://www.irozhlas.cz/rss/irozhlas') }, { peu: 'ČT24', web: 'https://ct24.ceskatelevize.cz/', load: () => fil('https://ct24.ceskatelevize.cz/rss/hlavni-zpravy') }, { peu: 'Google Zprávy', web: 'https://news.google.com/?hl=cs&gl=CZ&ceid=CZ:cs', load: () => google('Česko when:1d', 'cs', 'CZ') }, { peu: 'Zprávy česky (GDELT)', web: 'https://www.irozhlas.cz/', load: () => gdelt('sourcelang:czech') } ]
     };
-    function provaFonts(fonts, i = 0){
-      if (i >= fonts.length) return Promise.reject(new Error('cap'));
-      return fonts[i].load().then(l => { if (!l || !l.length) throw new Error('buit'); return { font: fonts[i], titulars: l }; }).catch(() => provaFonts(fonts, i + 1));
+    // Totes les fonts comencen alhora; es queda la primera de la llista que funcioni
+    // (si la preferida falla o tarda massa, passa a la següent sense esperes en cadena).
+    function provaFonts(fonts){
+      const intents = fonts.map(f => f.load().then(l => { if (!l || !l.length) throw new Error('buit'); return { font: f, titulars: l }; }));
+      intents.forEach(p => p.catch(() => {}));
+      const tria = i => i >= intents.length ? Promise.reject(new Error('cap')) : intents[i].catch(() => tria(i + 1));
+      return tria(0);
     }
+    // Les darreres notícies bones de cada llengua es desen per si un altre dia no se'n poden carregar
+    const desaNot = d => { try { localStorage.setItem('orloj.not.' + d.llengua, JSON.stringify({ peu: d.font.peu, web: d.font.web, titulars: d.titulars, hora: d.hora, dia: d.dia })); } catch(e){} };
+    const llegeixNot = ll => { try { const j = JSON.parse(localStorage.getItem('orloj.not.' + ll) || 'null'); return j && j.titulars && j.titulars.length ? j : null; } catch(e){ return null; } };
     // Reparteix els titulars en panells (mai no en queda cap a mitges)
-    let notDarrer = null, notToken = 0, notCarregades = 0, notLlengua = '';
+    let notDarrer = null, notToken = 0, notCarregades = 0, notLlengua = '', notErrors = 0, tReintent = null;
     // Deixa un sol panell (amb títol) i en retorna la llista buida
     function primeraLlista(){
       const pistaN = $('nPista'); pistaN.innerHTML = '';
@@ -4358,15 +4414,29 @@ window.ORLOJ_CONFIG = {"selectorTitol": "h1", "textDaurat": "original", "placa":
     function carregaNoticies(força){
       if (!força && notLlengua === LLENGUA && Date.now() - notCarregades < 5 * 60 * 1000) return;
       const token = ++notToken, llengua = LLENGUA, fonts = FONTS[llengua] || FONTS.ca;
-      if (notLlengua !== llengua){ primeraLlista().innerHTML = `<div class="m-estat">${L.carregant}</div>`; $('nPeu').textContent = ''; llNot.refresca(); }
+      if (notLlengua !== llengua){
+        const desades = llegeixNot(llengua);
+        if (desades){ notDarrer = { llengua, font: { peu: desades.peu, web: desades.web }, titulars: desades.titulars, hora: desades.hora }; notLlengua = llengua; pintaNoticies(); }
+        else { primeraLlista().innerHTML = `<div class="m-estat">${L.carregant}</div>`; $('nPeu').textContent = ''; llNot.refresca(); }
+      }
       provaFonts(fonts).then(({ font, titulars }) => {
         if (token !== notToken) return;
         const ara = new Date();
-        notDarrer = { llengua, font, titulars, hora: `${dosD(ara.getHours())}:${dosD(ara.getMinutes())}` };
-        notCarregades = Date.now(); notLlengua = llengua;
+        notDarrer = { llengua, font, titulars, hora: `${dosD(ara.getHours())}:${dosD(ara.getMinutes())}`, dia: ara.toDateString() };
+        notCarregades = Date.now(); notLlengua = llengua; notErrors = 0;
+        desaNot(notDarrer);
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(pintaNoticies); else pintaNoticies();
       }).catch(() => {
         if (token !== notToken) return;
+        // es torna a provar aviat (1, 2, 4… minuts), sense esperar els 10 minuts habituals
+        notErrors++; clearTimeout(tReintent); tReintent = setTimeout(() => carregaNoticies(true), Math.min(8, 2 ** (notErrors - 1)) * 60000);
+        const desades = llegeixNot(llengua);
+        if (desades){
+          notDarrer = { llengua, font: { peu: desades.peu, web: desades.web }, titulars: desades.titulars, hora: desades.hora };
+          notLlengua = llengua;
+          if (document.fonts && document.fonts.ready) document.fonts.ready.then(pintaNoticies); else pintaNoticies();
+          return;
+        }
         const ll = primeraLlista(); $('nPeu').textContent = '';
         ll.innerHTML = '<div class="m-estat"><span></span> <a target="_blank" rel="noopener"></a></div>';
         ll.querySelector('span').textContent = L.errNoticies; const a = ll.querySelector('a'); a.textContent = L.obreWeb; a.href = fonts[0].web;
